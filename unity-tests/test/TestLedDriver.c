@@ -1,6 +1,8 @@
 #include "unity.h"
 #include "LedDriver.h"
 
+#include "RuntimeErrorStub.h"
+
 static uint16_t virtualLeds;
 
 
@@ -82,6 +84,7 @@ void test_led_memory_is_not_readable(void)
 
 void test_turn_on_out_of_bounds_do_nothing(void)
 {
+    TEST_IGNORE();
     LedDriver_TurnOn(0);
     LedDriver_TurnOn(-1);
     LedDriver_TurnOn(17);
@@ -91,6 +94,7 @@ void test_turn_on_out_of_bounds_do_nothing(void)
 
 void test_turn_off_out_of_bounds_do_nothing(void)
 {
+    TEST_IGNORE();
     LedDriver_TurnAllOn();
     LedDriver_TurnOff(0);
     LedDriver_TurnOff(-1);
@@ -100,6 +104,25 @@ void test_turn_off_out_of_bounds_do_nothing(void)
 }
 
 // TODO Test: check out-of-bounds values
+
+void test_turn_on_out_of_bounds_throws_runtime_error(void)
+{
+    int ledNum = 17;
+    LedDriver_TurnOn(ledNum);
+    TEST_ASSERT_EQUAL_STRING("LED Driver: out-of-bounds LED",
+                             RuntimeErrorStub_GetLastError());
+    TEST_ASSERT_EQUAL(ledNum, RuntimeErrorStub_GetLastParameter());
+}
+
+void test_turn_off_out_of_bounds_throws_runtime_error(void)
+{
+    int ledNum = -1;
+    LedDriver_TurnAllOn();
+    LedDriver_TurnOff(ledNum);
+    TEST_ASSERT_EQUAL_STRING("LED Driver: out-of-bounds LED",
+                             RuntimeErrorStub_GetLastError());
+    TEST_ASSERT_EQUAL(ledNum, RuntimeErrorStub_GetLastParameter());
+}
 
 //------------------------------------------------------------------------------
 int main(void) 
@@ -114,6 +137,8 @@ int main(void)
     RUN_TEST(test_led_memory_is_not_readable);
     RUN_TEST(test_turn_on_out_of_bounds_do_nothing);
     RUN_TEST(test_turn_off_out_of_bounds_do_nothing);
+    RUN_TEST(test_turn_on_out_of_bounds_throws_runtime_error);
+    RUN_TEST(test_turn_off_out_of_bounds_throws_runtime_error);
 
     return UNITY_END();
 }

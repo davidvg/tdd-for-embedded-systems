@@ -31,12 +31,13 @@ CFLAGS += -Wundef
 # CFLAGS += -Wold-style-definition
 #CFLAGS += -Wno-misleading-indentation
 
-TARGET_BASE=test
+TARGET_BASE=LedDriver_test
 
 TARGET = $(TARGET_BASE)$(TARGET_EXTENSION)
 
 SRC_FILES=$(UNITY_ROOT)/src/unity.c \
 	src/LedDriver.c \
+	util/RuntimeErrorStub.c \
 	test/TestLedDriver.c
 
 INC_DIRS=-Isrc -Iinclude -I$(UNITY_ROOT)/src

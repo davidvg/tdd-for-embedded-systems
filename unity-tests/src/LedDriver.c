@@ -1,4 +1,6 @@
 #include "LedDriver.h"
+#include "RuntimeError.h"
+#include <stdbool.h>
 
 static uint16_t *ledsAddress;    // Led register address
 /**
@@ -31,6 +33,11 @@ static void updateHardware()
     *ledsAddress = ledsImage;
 }
 
+static bool checkLedNumberBoundaries(int ledNumber)
+{
+    return (ledNumber < MIN_LED_NUM || ledNumber > MAX_LED_NUM);
+}
+
 // *** INTERFACE *** //
 
 void LedDriver_Create(uint16_t *address)
@@ -46,7 +53,10 @@ void LedDriver_Create(uint16_t *address)
 
 void LedDriver_TurnOn(int ledNumber)
 {
-    if (ledNumber < MIN_LED_NUM || ledNumber > MAX_LED_NUM) { return; }
+    if (checkLedNumberBoundaries(ledNumber)) {
+        RUNTIME_ERROR("LED Driver: out-of-bounds LED", ledNumber);
+        return;
+    }
 
     ledsImage |= convertLedNumberToBit(ledNumber);
     updateHardware();
@@ -54,7 +64,10 @@ void LedDriver_TurnOn(int ledNumber)
 
 void LedDriver_TurnOff(int ledNumber)
 {
-    if (ledNumber < MIN_LED_NUM || ledNumber > MAX_LED_NUM) { return; }
+    if (checkLedNumberBoundaries(ledNumber)) {
+        RUNTIME_ERROR("LED Driver: out-of-bounds LED", ledNumber);
+        return;
+    }
 
     ledsImage &= ~convertLedNumberToBit(ledNumber);
     updateHardware();
