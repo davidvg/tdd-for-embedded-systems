@@ -26,14 +26,16 @@ CPP_PLATFORM = Gcc
 
 SRC_DIRS = \
 	src \
-	src/LedDriver
+	src/LedDriver \
+	util
 
 TEST_SRC_DIRS = \
 	tests \
 	tests/LedDriver
 
 INCLUDE_DIRS = \
-  .\
+  . \
+  ./include \
   $(SRC_DIRS) \
   $(CPPUTEST_HOME)/include \
   $(CPPUTEST_HOME)/include/CppUTest \

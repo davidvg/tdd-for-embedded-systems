@@ -3,7 +3,8 @@
 extern "C"
 {
     #include "LedDriver.h"
-    #include <stdint.h>
+    // #include <stdint.h>
+    #include "RuntimeErrorStub.h"
 }
 
 
@@ -95,21 +96,40 @@ TEST(LedDriver, UpperAndLowerBounds)
     CHECK_EQUAL(0x8001, virtualLeds);
 }
 
-// TEST(LedDriver, OutOfBoundsChangesNothing)
-// {
-//     LedDriver_TurnOn(-1);
-//     LedDriver_TurnOn(0);
-//     LedDriver_TurnOn(17);
-//     LedDriver_TurnOn(3141);
-//     CHECK_EQUAL(0x0000, virtualLeds);
-// }
+IGNORE_TEST(LedDriver, TurnOnOutOfBoundsChangesNothing)
+{
+    LedDriver_TurnOn(-1);
+    LedDriver_TurnOn(0);
+    LedDriver_TurnOn(17);
+    LedDriver_TurnOn(3141);
+    CHECK_EQUAL(0x0000, virtualLeds);
+}
 
-// TEST(LedDriver, OutOfBoundsChangesNothing)
-// {
-//     LedDriver_TurnAllOn();
-//     LedDriver_TurnOff(-1);
-//     LedDriver_TurnOff(0);
-//     LedDriver_TurnOff(17);
-//     LedDriver_TurnOff(3141);
-//     CHECK_EQUAL(0xffff, virtualLeds);
-// }
+IGNORE_TEST(LedDriver, TurnOffOutOfBoundsChangesNothing)
+{
+    LedDriver_TurnAllOn();
+    LedDriver_TurnOff(-1);
+    LedDriver_TurnOff(0);
+    LedDriver_TurnOff(17);
+    LedDriver_TurnOff(3141);
+    CHECK_EQUAL(0xffff, virtualLeds);
+}
+
+TEST(LedDriver, TurnOnOutOfBoundsThrowsRuntimeError)
+{
+    int ledNum = 17;
+    LedDriver_TurnOn(ledNum);
+    STRCMP_EQUAL("LED Driver: out-of-bounds LED",
+                 RuntimeErrorStub_GetLastError());
+    CHECK_EQUAL(ledNum, RuntimeErrorStub_GetLastParameter());
+}
+
+TEST(LedDriver, TurnOffOutOfBoundsThrowsRuntimeError)
+{
+    int ledNum = 17;
+    LedDriver_TurnAllOn();
+    LedDriver_TurnOff(ledNum);
+    STRCMP_EQUAL("LED Driver: out-of-bounds LED",
+                 RuntimeErrorStub_GetLastError());
+    CHECK_EQUAL(ledNum, RuntimeErrorStub_GetLastParameter());
+}

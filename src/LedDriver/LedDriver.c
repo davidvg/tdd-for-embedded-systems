@@ -14,6 +14,13 @@ enum {
     ALL_LEDS_OFF = ~ALL_LEDS_ON
 };
 
+enum
+{
+    MIN_LED_NUM=1,
+    MAX_LED_NUM=16
+};
+
+
 static uint16_t convertLedNumberToBit(int ledNumber)
 {
     return (uint16_t)(1 << (ledNumber-1));
@@ -24,6 +31,10 @@ static void updateHardware(void)
     *ledsAddress = ledsImage;   
 }
 
+static bool checkLedNumberBoundaries(int ledNumber)
+{
+    return (ledNumber < MIN_LED_NUM || ledNumber > MAX_LED_NUM);
+}
 
 void LedDriver_Create(uint16_t *address)
 {
@@ -38,8 +49,11 @@ void LedDriver_Destroy(void)
 
 void LedDriver_TurnOn(int ledNumber)
 {
-    // if (ledNumber < 0 || ledNumber > 16)
-    //     return;
+    if (checkLedNumberBoundaries(ledNumber))
+    {
+        RUNTIME_ERROR("LED Driver: out-of-bounds LED", ledNumber);
+        return;
+    }
 
     ledsImage |= convertLedNumberToBit(ledNumber);
     updateHardware();
@@ -47,8 +61,11 @@ void LedDriver_TurnOn(int ledNumber)
 
 void LedDriver_TurnOff(int ledNumber)
 {
-    // if (ledNumber < 0 || ledNumber > 16)
-    //     return;
+    if (checkLedNumberBoundaries(ledNumber))
+    {
+        RUNTIME_ERROR("LED Driver: out-of-bounds LED", ledNumber);
+        return;
+    }
 
     ledsImage &= (uint16_t)~(convertLedNumberToBit(ledNumber));
     updateHardware();

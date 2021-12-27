@@ -2,7 +2,9 @@
 #define _LED_DRIVER_H
 
 #include <stdint.h>
+#include <stdbool.h>
 // #include <inttypes.h>
+#include "RuntimeError.h"
 
 void LedDriver_Create(uint16_t *address);
 void LedDriver_Destroy(void);
