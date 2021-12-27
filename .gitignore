@@ -1,3 +1,9 @@
 .vscode
 **/build/**
 **/unity-assertions-cheatsheet.pdf
+**/*.o
+**/*.d
+lib
+
+# Compiled targets
+LedDriver_tests
