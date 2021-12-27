@@ -27,40 +27,40 @@ TEST(LedDriver, LedsOffAfterCreate)
 {
     virtualLeds = 0xffff;
     LedDriver_Create(&virtualLeds);
-    CHECK_EQUAL(0x0, virtualLeds);
+    LONGS_EQUAL(0x0, virtualLeds);
 }
 
 TEST(LedDriver, TurnOnLedOne) 
 {
     LedDriver_TurnOn(1);
-    CHECK_EQUAL(0x1, virtualLeds);
+    LONGS_EQUAL(0x1, virtualLeds);
 }
 
 TEST(LedDriver, TurnOffLedOne) 
 {
     LedDriver_TurnOn(1);
     LedDriver_TurnOff(1);
-    CHECK_EQUAL(0x0, virtualLeds);
+    LONGS_EQUAL(0x0, virtualLeds);
 }
 
 TEST(LedDriver, TurnOnMultipleLeds)
 {
     LedDriver_TurnOn(8);
     LedDriver_TurnOn(9);
-    CHECK_EQUAL(0x0180, virtualLeds);
+    LONGS_EQUAL(0x0180, virtualLeds);
 }
 
 TEST(LedDriver, TurnAllOn)
 {
     LedDriver_TurnAllOn();
-    CHECK_EQUAL(0xffff, virtualLeds);
+    LONGS_EQUAL(0xffff, virtualLeds);
 }
 
 TEST(LedDriver, TurnOffAnyLed)
 {
     LedDriver_TurnAllOn();
     LedDriver_TurnOff(8);
-    CHECK_EQUAL(0xff7f, virtualLeds); // 1111.0111
+    LONGS_EQUAL(0xff7f, virtualLeds); // 1111.0111
 }
 /**
  * The datasheet for the Led Driver says that the status register for the
@@ -86,14 +86,14 @@ TEST(LedDriver, LedRegisterIsNotReadable)
     LedDriver_TurnOn(8);
     // As the state is not readable, the 8-th bit has been set and the current
     // value for virtualLeds is 0x0181.
-    CHECK_EQUAL(0x0080, virtualLeds);
+    LONGS_EQUAL(0x0080, virtualLeds);
 }
 
 TEST(LedDriver, UpperAndLowerBounds)
 {
     LedDriver_TurnOn(1);
     LedDriver_TurnOn(16);
-    CHECK_EQUAL(0x8001, virtualLeds);
+    LONGS_EQUAL(0x8001, virtualLeds);
 }
 
 IGNORE_TEST(LedDriver, TurnOnOutOfBoundsChangesNothing)
@@ -102,7 +102,7 @@ IGNORE_TEST(LedDriver, TurnOnOutOfBoundsChangesNothing)
     LedDriver_TurnOn(0);
     LedDriver_TurnOn(17);
     LedDriver_TurnOn(3141);
-    CHECK_EQUAL(0x0000, virtualLeds);
+    LONGS_EQUAL(0x0000, virtualLeds);
 }
 
 IGNORE_TEST(LedDriver, TurnOffOutOfBoundsChangesNothing)
@@ -112,7 +112,7 @@ IGNORE_TEST(LedDriver, TurnOffOutOfBoundsChangesNothing)
     LedDriver_TurnOff(0);
     LedDriver_TurnOff(17);
     LedDriver_TurnOff(3141);
-    CHECK_EQUAL(0xffff, virtualLeds);
+    LONGS_EQUAL(0xffff, virtualLeds);
 }
 
 TEST(LedDriver, TurnOnOutOfBoundsThrowsRuntimeError)
@@ -121,7 +121,7 @@ TEST(LedDriver, TurnOnOutOfBoundsThrowsRuntimeError)
     LedDriver_TurnOn(ledNum);
     STRCMP_EQUAL("LED Driver: out-of-bounds LED",
                  RuntimeErrorStub_GetLastError());
-    CHECK_EQUAL(ledNum, RuntimeErrorStub_GetLastParameter());
+    LONGS_EQUAL(ledNum, RuntimeErrorStub_GetLastParameter());
 }
 
 TEST(LedDriver, TurnOffOutOfBoundsThrowsRuntimeError)
@@ -131,5 +131,5 @@ TEST(LedDriver, TurnOffOutOfBoundsThrowsRuntimeError)
     LedDriver_TurnOff(ledNum);
     STRCMP_EQUAL("LED Driver: out-of-bounds LED",
                  RuntimeErrorStub_GetLastError());
-    CHECK_EQUAL(ledNum, RuntimeErrorStub_GetLastParameter());
+    LONGS_EQUAL(ledNum, RuntimeErrorStub_GetLastParameter());
 }
