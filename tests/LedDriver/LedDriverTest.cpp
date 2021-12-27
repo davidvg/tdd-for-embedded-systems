@@ -124,7 +124,7 @@ IGNORE_TEST(LedDriver, TurnOffOutOfBoundsChangesNothing)
 
 TEST(LedDriver, TurnOnOutOfBoundsThrowsRuntimeError)
 {
-    int ledNum = 17;
+    int ledNum = -1;
     LedDriver_TurnOn(ledNum);
     STRCMP_EQUAL("LED Driver: out-of-bounds LED",
                  RuntimeErrorStub_GetLastError());

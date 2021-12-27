@@ -33,7 +33,7 @@ static void updateHardware(void)
     *ledsAddress = ledsImage;   
 }
 
-static bool checkLedNumberBoundaries(int ledNumber)
+static bool isLedOutOfBounds(int ledNumber)
 {
     return (ledNumber < MIN_LED_NUM || ledNumber > MAX_LED_NUM);
 }
@@ -51,7 +51,7 @@ void LedDriver_Destroy(void)
 
 void LedDriver_TurnOn(int ledNumber)
 {
-    if (checkLedNumberBoundaries(ledNumber))
+    if (isLedOutOfBounds(ledNumber))
     {
         RUNTIME_ERROR("LED Driver: out-of-bounds LED", ledNumber);
         return;
@@ -63,7 +63,7 @@ void LedDriver_TurnOn(int ledNumber)
 
 void LedDriver_TurnOff(int ledNumber)
 {
-    if (checkLedNumberBoundaries(ledNumber))
+    if (isLedOutOfBounds(ledNumber))
     {
         RUNTIME_ERROR("LED Driver: out-of-bounds LED", ledNumber);
         return;

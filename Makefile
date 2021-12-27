@@ -12,9 +12,11 @@ endif
 
 #--- Inputs ----#
 COMPONENT_NAME = LedDriver
+MEMORY_MAP_FILE = $(COMPONENT_NAME).map
 
 CPPUTEST_USE_EXTENSIONS = Y
 CPP_PLATFORM = Gcc
+CPPUTEST_LDFLAGS=-Xlinker -Map=$(MEMORY_MAP_FILE)
 
 # This line is overriding the default new macros. This is helpful when using
 #  std library includes like <list> and other containers so that memory leak
@@ -39,5 +41,7 @@ INCLUDE_DIRS = \
   $(SRC_DIRS) \
   $(CPPUTEST_HOME)/include \
   $(CPPUTEST_HOME)/include/CppUTest \
+
+MOCKS_SRC_DIRS = 
 
 include $(CPPUTEST_HOME)/build/MakefileWorker.mk
