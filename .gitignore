@@ -4,6 +4,7 @@
 **/*.o
 **/*.d
 lib
+**/*.out
 
 # Compiled targets
 LedDriver_tests
