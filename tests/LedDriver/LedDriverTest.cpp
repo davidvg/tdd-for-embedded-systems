@@ -56,6 +56,13 @@ TEST(LedDriver, TurnAllOn)
     LONGS_EQUAL(0xffff, virtualLeds);
 }
 
+TEST(LedDriver, TurnAllOff)
+{
+    LedDriver_TurnAllOn();
+    LedDriver_TurnAllOff();
+    LONGS_EQUAL(0x0000, virtualLeds);
+}
+
 TEST(LedDriver, TurnOffAnyLed)
 {
     LedDriver_TurnAllOn();

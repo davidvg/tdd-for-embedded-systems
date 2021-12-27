@@ -9,9 +9,10 @@ static uint16_t *ledsAddress;
  */
 static uint16_t ledsImage;
 
+// TODO Check casting
 enum {
     ALL_LEDS_ON = 0xffff,
-    ALL_LEDS_OFF = ~ALL_LEDS_ON
+    ALL_LEDS_OFF = (uint16_t)~ALL_LEDS_ON
 };
 
 enum
@@ -23,6 +24,7 @@ enum
 
 static uint16_t convertLedNumberToBit(int ledNumber)
 {
+    // TODO Check casting
     return (uint16_t)(1 << (ledNumber-1));
 }
 
@@ -67,6 +69,7 @@ void LedDriver_TurnOff(int ledNumber)
         return;
     }
 
+    // TODO Check casting
     ledsImage &= (uint16_t)~(convertLedNumberToBit(ledNumber));
     updateHardware();
 }
@@ -74,5 +77,11 @@ void LedDriver_TurnOff(int ledNumber)
 void LedDriver_TurnAllOn(void)
 {   
     ledsImage = ALL_LEDS_ON;
+    updateHardware();
+}
+
+void LedDriver_TurnAllOff(void)
+{   
+    ledsImage = ALL_LEDS_OFF;
     updateHardware();
 }
