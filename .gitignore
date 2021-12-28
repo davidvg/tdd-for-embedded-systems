@@ -4,8 +4,8 @@
 **/*.o
 **/*.d
 lib
-**/*.out
 
 # Compiled targets
-LedDriver_tests
+**/*.out
+*_tests
 **/*.map

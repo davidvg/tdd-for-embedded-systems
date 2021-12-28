@@ -11,12 +11,12 @@ ifndef SILENCE
 endif
 
 #--- Inputs ----#
-COMPONENT_NAME = LedDriver
+COMPONENT_NAME = tdd
 MEMORY_MAP_FILE = $(COMPONENT_NAME).map
 
 CPPUTEST_USE_EXTENSIONS = Y
 CPP_PLATFORM = Gcc
-CPPUTEST_LDFLAGS=-Xlinker -Map=$(MEMORY_MAP_FILE)
+# CPPUTEST_LDFLAGS=-Xlinker -Map=$(MEMORY_MAP_FILE)
 
 # This line is overriding the default new macros. This is helpful when using
 #  std library includes like <list> and other containers so that memory leak
@@ -28,8 +28,8 @@ CPPUTEST_LDFLAGS=-Xlinker -Map=$(MEMORY_MAP_FILE)
 
 SRC_DIRS = \
 	src \
-	src/LedDriver \
-	util
+	util \
+	src/LedDriver
 
 TEST_SRC_DIRS = \
 	tests \
@@ -38,6 +38,8 @@ TEST_SRC_DIRS = \
 INCLUDE_DIRS = \
   . \
   ./include \
+  ./include/util \
+  ./include/LedDriver \
   $(SRC_DIRS) \
   $(CPPUTEST_HOME)/include \
   $(CPPUTEST_HOME)/include/CppUTest \
