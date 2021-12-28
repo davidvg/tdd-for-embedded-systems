@@ -124,6 +124,36 @@ void test_turn_off_out_of_bounds_throws_runtime_error(void)
     TEST_ASSERT_EQUAL(ledNum, RuntimeErrorStub_GetLastParameter());
 }
 
+void test_is_on_returns_led_status(void)
+{
+    TEST_ASSERT_FALSE(LedDriver_IsOn(11));
+    LedDriver_TurnOn(11);
+    TEST_ASSERT_TRUE(LedDriver_IsOn(11));
+}
+
+void test_is_off_returns_led_status(void)
+{
+    TEST_ASSERT_TRUE(LedDriver_IsOff(11));
+    LedDriver_TurnOn(11);
+    TEST_ASSERT_FALSE(LedDriver_IsOff(11));
+}
+
+void test_out_of_bounds_leds_are_always_off(void)
+{
+    TEST_ASSERT_TRUE(LedDriver_IsOff(0));
+    TEST_ASSERT_TRUE(LedDriver_IsOff(17));
+    TEST_ASSERT_FALSE(LedDriver_IsOn(0));
+    TEST_ASSERT_FALSE(LedDriver_IsOn(17));
+}
+
+void test_turn_off_multiple_leds(void)
+{
+    LedDriver_TurnAllOn();
+    LedDriver_TurnOff(8);
+    LedDriver_TurnOff(9);
+    TEST_ASSERT_EQUAL_HEX16((~0x0180)&0xffff, virtualLeds);
+}
+
 //------------------------------------------------------------------------------
 int main(void) 
 {
@@ -139,6 +169,10 @@ int main(void)
     RUN_TEST(test_turn_off_out_of_bounds_do_nothing);
     RUN_TEST(test_turn_on_out_of_bounds_throws_runtime_error);
     RUN_TEST(test_turn_off_out_of_bounds_throws_runtime_error);
+    RUN_TEST(test_is_on_returns_led_status);
+    RUN_TEST(test_is_off_returns_led_status);
+    RUN_TEST(test_out_of_bounds_leds_are_always_off);
+    RUN_TEST(test_turn_off_multiple_leds);
 
     return UNITY_END();
 }
