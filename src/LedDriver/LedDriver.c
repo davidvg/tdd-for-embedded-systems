@@ -38,6 +38,19 @@ static bool isLedOutOfBounds(int ledNumber)
     return (ledNumber < MIN_LED_NUM || ledNumber > MAX_LED_NUM);
 }
 
+static void setLedImageBit(int ledNumber)
+{
+    ledsImage |= convertLedNumberToBit(ledNumber);
+}
+
+static void clearLedImageBit(int ledNumber)
+{
+    // TODO Check casting
+    ledsImage &= (uint16_t)~(convertLedNumberToBit(ledNumber));
+}
+
+/* Interface */
+
 void LedDriver_Create(uint16_t *address)
 {
     ledsAddress = address;
@@ -57,7 +70,7 @@ void LedDriver_TurnOn(int ledNumber)
         return;
     }
 
-    ledsImage |= convertLedNumberToBit(ledNumber);
+    setLedImageBit(ledNumber);
     updateHardware();
 }
 
@@ -69,8 +82,7 @@ void LedDriver_TurnOff(int ledNumber)
         return;
     }
 
-    // TODO Check casting
-    ledsImage &= (uint16_t)~(convertLedNumberToBit(ledNumber));
+    clearLedImageBit(ledNumber);
     updateHardware();
 }
 
