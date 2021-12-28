@@ -11,7 +11,7 @@ ifndef SILENCE
 endif
 
 #--- Inputs ----#
-COMPONENT_NAME = tdd
+COMPONENT_NAME = LedDriver
 MEMORY_MAP_FILE = $(COMPONENT_NAME).map
 
 CPPUTEST_USE_EXTENSIONS = Y
@@ -28,18 +28,15 @@ CPP_PLATFORM = Gcc
 
 SRC_DIRS = \
 	src \
-	util \
-	src/LedDriver
+	util
 
 TEST_SRC_DIRS = \
-	tests \
-	tests/LedDriver
+	tests
 
 INCLUDE_DIRS = \
   . \
   ./include \
   ./include/util \
-  ./include/LedDriver \
   $(SRC_DIRS) \
   $(CPPUTEST_HOME)/include \
   $(CPPUTEST_HOME)/include/CppUTest \
