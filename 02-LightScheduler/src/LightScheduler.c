@@ -10,6 +10,7 @@ enum {
 
 typedef struct {
     int id;
+    Day day;
     int minuteOfDay;
     int event;
 } ScheduledLightEvent;
@@ -26,10 +27,13 @@ static void operateLight(ScheduledLightEvent * lightEvent)
 
 static void processEventNow(Time *time, ScheduledLightEvent *lightEvent)
 {
-    // No valid ID passed
+    int reactionDay = lightEvent->day;
+    int today = time->dayOfWeek;
+
     if (lightEvent->id == UNUSED)
         return;
-    // Not time yet
+    if (reactionDay != EVERYDAY && reactionDay != today)
+        return;
     if (lightEvent->minuteOfDay != time->minuteOfDay)
         return;
     
@@ -47,6 +51,7 @@ void LightScheduler_Destroy(void)
 void LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
 {
     scheduledEvent.id = id;
+    scheduledEvent.day = day;
     scheduledEvent.minuteOfDay = minuteOfDay;
     scheduledEvent.event = TURN_ON;
 }
@@ -54,6 +59,7 @@ void LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
 void LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
 {
     scheduledEvent.id = id;
+    scheduledEvent.day = day;
     scheduledEvent.minuteOfDay = minuteOfDay;
     scheduledEvent.event = TURN_OFF;
 }

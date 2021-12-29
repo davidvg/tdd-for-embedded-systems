@@ -131,3 +131,36 @@ TEST(LightScheduler, ScheduleOffEverydayItsTime)
 
     checkLightState(3, LIGHT_OFF);
 }
+
+/**
+ * LightScheduler: ScheduleTuesdayButItsMonday
+ * - Add a day component to ScheduledLightEvent.
+ * - In ScheduleTurnOn() and ScheduleTurnOff() update the value of day inside
+ *   scheduledEvent.
+ * - Inside processEvent() check that the event.day is not EVERYDAY to pass the
+ *   test.
+ */
+TEST(LightScheduler, ScheduleTuesdayButItsMonday)
+{
+    LightScheduler_ScheduleTurnOn(3, TUESDAY, 1200);
+    setTimeTo(MONDAY, 1200);
+
+    LightScheduler_WakeUp();
+
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
+
+/**
+ * LightScheduler: ScheduleTuesdayAndItsTuesday
+ * - In processEventNow() check it's not EVERYDAY AND today is the actual
+ *   day to react.
+ */
+TEST(LightScheduler, ScheduleTuesdayAndItsTuesday)
+{
+    LightScheduler_ScheduleTurnOn(3, TUESDAY, 1200);
+    setTimeTo(TUESDAY, 1200);
+
+    LightScheduler_WakeUp();
+
+    checkLightState(3, LIGHT_ON);
+}

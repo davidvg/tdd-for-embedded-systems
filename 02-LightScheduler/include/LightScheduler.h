@@ -2,8 +2,8 @@
 #define _LIGHT_SCHEDULER_H
 
 typedef enum  {
-    NONE=-1,
-    SUNDAY=1,
+    NONE = -1,
+    SUNDAY = 1,
     MONDAY,
     TUESDAY,
     WEDNESDAY,
