@@ -20,6 +20,18 @@ TEST_GROUP(LightScheduler)
         LightScheduler_Destroy();
         LightController_Create();
     }
+
+    void setTimeTo(int day, int minute)
+    {
+        FakeTimeService_SetDay(day);
+        FakeTimeService_SetMinute(minute);
+    }
+
+    void checkLightState(int id, int state)
+    {
+        LONGS_EQUAL(id, LightControllerSpy_GetLastId());
+        LONGS_EQUAL(state, LightControllerSpy_GetLastState());
+    }
 };
 
 /**
@@ -39,8 +51,7 @@ TEST_GROUP(LightScheduler)
  */
 TEST(LightScheduler, NoChangeToLightsDuringInitialization)
 {
-    LONGS_EQUAL(LIGHT_ID_UNKNOWN, LightControllerSpy_GetLastId());
-    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightControllerSpy_GetLastState());
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
 }
 
 /**
@@ -51,11 +62,12 @@ TEST(LightScheduler, NoChangeToLightsDuringInitialization)
  */
 TEST(LightScheduler, NoScheduleNothingHappens)
 {
-    FakeTimeService_SetDay(MONDAY);
-    FakeTimeService_SetMinute(100);
+    setTimeTo(MONDAY, 100);
+
     LightScheduler_WakeUp();
-    LONGS_EQUAL(LIGHT_ID_UNKNOWN, LightControllerSpy_GetLastId());
-    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightControllerSpy_GetLastState());
+    
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+
 }
 
 /**
@@ -67,12 +79,12 @@ TEST(LightScheduler, NoScheduleNothingHappens)
 TEST(LightScheduler, ScheduleOnEverydayNotTimeYet)
 {
     LightScheduler_ScheduleTurnOn(3, EVERYDAY, 1200);
-    FakeTimeService_SetDay(MONDAY);
-    FakeTimeService_SetMinute(1199);
-    LightScheduler_WakeUp();
+    setTimeTo(MONDAY, 1199);
 
-    LONGS_EQUAL(LIGHT_ID_UNKNOWN, LightControllerSpy_GetLastId());
-    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightControllerSpy_GetLastState());
+    LightScheduler_WakeUp();
+    
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+
 }
 
 /**
@@ -88,11 +100,34 @@ TEST(LightScheduler, ScheduleOnEverydayNotTimeYet)
 TEST(LightScheduler, ScheduleOnEverydayItsTime)
 {
     LightScheduler_ScheduleTurnOn(3, EVERYDAY, 1200);
-    FakeTimeService_SetDay(MONDAY);
-    FakeTimeService_SetMinute(1200);
+    setTimeTo(MONDAY, 1200);
 
     LightScheduler_WakeUp();
 
-    LONGS_EQUAL(3, LightControllerSpy_GetLastId());
-    LONGS_EQUAL(LIGHT_ON, LightControllerSpy_GetLastState());
+    checkLightState(3, LIGHT_ON);
+
+}
+
+/**
+ * LightScheduler: ScheduleOffEverydayItsTime
+ * - Declare LightScheduler_ScheduleTurnOff() in the header file and implement
+ *   it in the source file, to update lastId and lastState.
+ * - Add new elements to the ENUM in LightScheduler.c, defining different types
+ *   of events: TURN_ON, TURN_OFF.
+ * - Add a new element to the ScheduledLightEvent: event. It will be one of
+ *   TURN_ON, TURN_OFF.
+ * - Update ScheduleTurnOn() and ScheduleTurnOff() to update the event attribute
+ *   of ScheduledLightEvent.
+ * - In WakeUp() check the value of scheduledEvent.event to decide which function
+ *   to call.
+ */
+TEST(LightScheduler, ScheduleOffEverydayItsTime)
+{
+    LightScheduler_ScheduleTurnOff(3, EVERYDAY, 1200);
+    FakeTimeService_SetDay(MONDAY);
+    setTimeTo(MONDAY, 1200);
+
+    LightScheduler_WakeUp();
+
+    checkLightState(3, LIGHT_OFF);
 }

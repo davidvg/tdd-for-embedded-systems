@@ -47,3 +47,4 @@ The needded steps to pass the test is described in each test.
 1. `LightScheduler: NoScheduleNothingHappens`
 1. `LightScheduler: ScheduleOnEverydayNotTimeYet`
 1. `LightScheduler: ScheduleOnEverydayItsTime`
+1. `LightScheduler: ScheduleOffEverydayItsTime`
