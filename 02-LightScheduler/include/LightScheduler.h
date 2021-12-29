@@ -9,10 +9,13 @@ typedef enum  {
     WEDNESDAY,
     THURSDAY,
     FRIDAY,
-    SATURDAY
+    SATURDAY,
+    EVERYDAY = 10,
 } Day;
 
 void LightScheduler_Create(void);
 void LightScheduler_Destroy(void);
+void LightScheduler_WakeUp(void);
+void LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay);
 
 #endif
