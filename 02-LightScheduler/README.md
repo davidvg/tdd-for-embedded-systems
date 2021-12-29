@@ -35,6 +35,10 @@ LightController.h --> LightControllerSpy.h --> LightControllerSpy.c
 
 ## Tests and Interfaces
 
+The needded steps to pass the test is described in each test.
+
 1. `LightScheduler: NoChangeToLightsDuringInitialization`
 1. `LightControllerSpy: Create`
 1. `LightControllerSpy: RememberTheLastLightIdControlled`
+1. `FakeTimeService: Create`
+1. `FakeTimeService: Set`
