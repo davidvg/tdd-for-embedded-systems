@@ -1,6 +1,8 @@
 #ifndef _LIGHT_SCHEDULER_H
 #define _LIGHT_SCHEDULER_H
 
+#include "bool.h"
+
 typedef enum  {
     NONE = -1,
     SUNDAY = 1,
@@ -14,9 +16,6 @@ typedef enum  {
     WEEKEND,
     WEEKDAY,
 } Day;
-
-#define FALSE   0
-#define TRUE    1
 
 void LightScheduler_Create(void);
 void LightScheduler_Destroy(void);

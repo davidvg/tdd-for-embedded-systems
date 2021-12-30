@@ -34,6 +34,7 @@ TEST_SRC_DIRS = \
 
 INCLUDE_DIRS = \
   . \
+  ../common/include \
   ./include \
   $(SRC_DIRS) \
   $(CPPUTEST_HOME)/include \
