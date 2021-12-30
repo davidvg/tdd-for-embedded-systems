@@ -25,19 +25,40 @@ static void operateLight(ScheduledLightEvent * lightEvent)
         LightController_Off(lightEvent->id);
 }
 
-static void processEventNow(Time *time, ScheduledLightEvent *lightEvent)
+static int doesLightRespondToday(Time *time, int reactionDay)
 {
-    int reactionDay = lightEvent->day;
     int today = time->dayOfWeek;
 
+    if (reactionDay == EVERYDAY)
+        return TRUE;
+    if (reactionDay == today)
+        return TRUE;
+    if (reactionDay == WEEKEND && (today == SATURDAY || today == SUNDAY))
+        return TRUE;
+    if (reactionDay == WEEKDAY && today >= MONDAY && today <= FRIDAY)
+        return TRUE;
+
+    return FALSE;
+}
+
+static void processEventNow(Time *time, ScheduledLightEvent *lightEvent)
+{
     if (lightEvent->id == UNUSED)
-        return;
-    if (reactionDay != EVERYDAY && reactionDay != today)
         return;
     if (lightEvent->minuteOfDay != time->minuteOfDay)
         return;
-    
+    if (!doesLightRespondToday(time, lightEvent->day))
+        return;
+
     operateLight(lightEvent);
+}
+
+static void scheduleEvent(int id, Day day, int minute, int event)
+{
+    scheduledEvent.id = id;
+    scheduledEvent.day = day;
+    scheduledEvent.minuteOfDay = minute;
+    scheduledEvent.event = event;
 }
 
 void LightScheduler_Create(void)
@@ -50,18 +71,12 @@ void LightScheduler_Destroy(void)
 
 void LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
 {
-    scheduledEvent.id = id;
-    scheduledEvent.day = day;
-    scheduledEvent.minuteOfDay = minuteOfDay;
-    scheduledEvent.event = TURN_ON;
+    scheduleEvent(id, day, minuteOfDay, TURN_ON);
 }
 
 void LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
 {
-    scheduledEvent.id = id;
-    scheduledEvent.day = day;
-    scheduledEvent.minuteOfDay = minuteOfDay;
-    scheduledEvent.event = TURN_OFF;
+    scheduleEvent(id, day, minuteOfDay, TURN_OFF);
 }
 
 void LightScheduler_WakeUp(void)

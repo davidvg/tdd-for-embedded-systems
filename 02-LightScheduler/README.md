@@ -6,16 +6,16 @@ This file describes the steps for creating the  `HomeAutomation` example.
 
 ```txt
 [X] Lights are not changed at initialization.
-[ ] Day is wrong, time is wrong, no lights are changed.
+[X] Day is wrong, time is wrong, no lights are changed.
 [ ] Day is right, time is wrong, no lights are changed.
 [ ] Day is wrong, time is right, no lights are changed.
-[ ] Day is right, time is right, the right light is turned on.
-[ ] Day is right, time is right, the right light is turned off.
+[X] Day is right, time is right, the right light is turned on.
+[X] Day is right, time is right, the right light is turned off.
 [X] Schedule every day, time is wrong, no changes.
 [X] Schedule every day, right time, light turns on.
-[ ] Schedule a specific day.
-[ ] Schedule all weekdays.
-[ ] Schedule weekend days.
+[X] Schedule a specific day.
+[X] Schedule all weekdays.
+[X] Schedule weekend days.
 [ ] Remove scheduled event.
 [ ] Remove non-existent event.
 [ ] Multiple scheduled events at the same time.
@@ -50,3 +50,10 @@ The needded steps to pass the test is described in each test.
 1. `LightScheduler: ScheduleOffEverydayItsTime`
 1. `LightScheduler: ScheduleTuesdayButItsMonday`
 1. `LightScheduler: ScheduleTuesdayAndItsTuesday`
+1. `LightScheduler: ScheduleWeekEndItsFriday`
+1. `LightScheduler: ScheduleWeekEndItsSaturday`
+1. `LightScheduler: ScheduleWeekEndItsSunday`
+1. `LightScheduler: ScheduleWeekEndItsMonday`
+1. `LightScheduler: ScheduleWeekdayItsSunday`
+1. `LightScheduler: ScheduleWeekdayItsMonday`
+1. `LightScheduler: ScheduleWeekdayItsFriday`

@@ -11,7 +11,12 @@ typedef enum  {
     FRIDAY,
     SATURDAY,
     EVERYDAY = 10,
+    WEEKEND,
+    WEEKDAY,
 } Day;
+
+#define FALSE   0
+#define TRUE    1
 
 void LightScheduler_Create(void);
 void LightScheduler_Destroy(void);

@@ -164,3 +164,91 @@ TEST(LightScheduler, ScheduleTuesdayAndItsTuesday)
 
     checkLightState(3, LIGHT_ON);
 }
+
+/**
+ * LightScheduler: ScheduleWeekEndItsFriday
+ * - Add WEEKEND to the enum in LightScheduler.h
+ */
+TEST(LightScheduler, ScheduleWeekEndItsFriday)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
+    setTimeTo(FRIDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
+
+/**
+ * LightScheduler: ScheduleWeekEndItsSaturday
+ * - Refactor to create doesLightRespondToday(), a function that checks if light
+ *   should respond today. It returns 1 on success and 0 on failure.
+ * - Inside this function, return 1 when reactionDay=EVERYDAY, reactionDay=today
+ *   or (reactionDay==WEEKEND && today==SATURDAY)
+ */
+TEST(LightScheduler, ScheduleWeekEndItsSaturday)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
+    setTimeTo(SATURDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(3, LIGHT_ON);
+}
+
+/**
+ * LightScheduler: ScheduleWeekEndItsSunday
+ * - Modify the WEEKEND check in doesLightRespondToday() to apply when today is
+ *   SATURDAY or SUNDAY
+ */
+TEST(LightScheduler, ScheduleWeekEndItsSunday)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
+    setTimeTo(SUNDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(3, LIGHT_ON);
+}
+
+/**
+ * LightScheduler: ScheduleWeekEndItsMonday
+ * Passes.
+ */
+TEST(LightScheduler, ScheduleWeekEndItsMonday)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
+    setTimeTo(MONDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
+
+/**
+ * LightScheduler: ScheduleWeekdayItsSunday
+ * - Add WEEKDAY to the enum
+ */
+TEST(LightScheduler, ScheduleWeekdayItsSunday)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKDAY, 1200);
+    setTimeTo(SUNDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
+
+/**
+ * LightScheduler: ScheduleWeekdayItsMonday
+ * - Check that reactionDay=WEEKDAY and today=MONDAY
+ */
+TEST(LightScheduler, ScheduleWeekdayItsMonday)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKDAY, 1200);
+    setTimeTo(MONDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(3, LIGHT_ON);
+}
+
+/**
+ * LightScheduler: ScheduleWeekdayItsFriday
+ * - Modify the WEEKDAY check to include today>=MONDAY and today<=FRIDAY
+ */
+TEST(LightScheduler, ScheduleWeekdayItsFriday)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKDAY, 1200);
+    setTimeTo(FRIDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(3, LIGHT_ON);
+}
