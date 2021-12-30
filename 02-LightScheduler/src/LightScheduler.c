@@ -6,6 +6,7 @@ enum {
     UNUSED = -1,
     TURN_ON = 0,
     TURN_OFF,
+    MAX_EVENTS = 128,
 };
 
 typedef struct {
@@ -16,6 +17,7 @@ typedef struct {
 } ScheduledLightEvent;
 
 static ScheduledLightEvent scheduledEvent;
+static ScheduledLightEvent scheduledEvents[MAX_EVENTS];
 
 static void operateLight(ScheduledLightEvent * lightEvent)
 {
@@ -55,6 +57,17 @@ static void processEventNow(Time *time, ScheduledLightEvent *lightEvent)
 
 static void scheduleEvent(int id, Day day, int minute, int event)
 {
+    for (int i=0; i<MAX_EVENTS; i++)
+    {
+        if (scheduledEvents[i].id == UNUSED)
+        {
+            scheduledEvents[i].id = id;
+            scheduledEvents[i].day = day;
+            scheduledEvents[i].minuteOfDay = minute;
+            scheduledEvents[i].event = event;
+            break;
+        }
+    }
     scheduledEvent.id = id;
     scheduledEvent.day = day;
     scheduledEvent.minuteOfDay = minute;
@@ -64,10 +77,19 @@ static void scheduleEvent(int id, Day day, int minute, int event)
 void LightScheduler_Create(void)
 {
     scheduledEvent.id = UNUSED;
+
+    for (int i=0; i<MAX_EVENTS; i++)
+    {
+        scheduledEvents[i].id = UNUSED;
+    }
+
+    TimeService_SetPeriodicAlarmInSeconds(60, LightScheduler_WakeUp);
 }
 
 void LightScheduler_Destroy(void)
-{}
+{
+    TimeService_CancelPeriodicAlarmInSeconds(60, LightScheduler_WakeUp);
+}
 
 void LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
 {
@@ -83,6 +105,10 @@ void LightScheduler_WakeUp(void)
 {
     Time time;
     TimeService_GetTime(&time);
-    
-    processEventNow(&time, &scheduledEvent);
+
+    for (int i=0; i<MAX_EVENTS; i++)
+    {
+        processEventNow(&time, &scheduledEvents[i]);
+    }
+    processEventNow(&time, &scheduledEvent);    
 }

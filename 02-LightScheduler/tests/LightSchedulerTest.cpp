@@ -29,8 +29,17 @@ TEST_GROUP(LightScheduler)
 
     void checkLightState(int id, int state)
     {
-        LONGS_EQUAL(id, LightControllerSpy_GetLastId());
-        LONGS_EQUAL(state, LightControllerSpy_GetLastState());
+        if (id == LIGHT_ID_UNKNOWN)
+        {
+            // TODO Check if this is needed anymore 
+            LONGS_EQUAL(id, LightControllerSpy_GetLastId());
+            LONGS_EQUAL(state, LightControllerSpy_GetLastState());   
+        }
+        else
+        {
+            LONGS_EQUAL(state, LightControllerSpy_GetLightState(id));
+        }
+         
     }
 };
 
@@ -251,4 +260,105 @@ TEST(LightScheduler, ScheduleWeekdayItsFriday)
     setTimeTo(FRIDAY, 1200);
     LightScheduler_WakeUp();
     checkLightState(3, LIGHT_ON);
+}
+
+/**
+ * LightScheduler: RememberAllLightStates
+ * - Declare LightControllerSpy_GetLightState(int) in LightControllerSpy.h
+ * - Implement it in LightContollerSpy.c with empty body.
+ * - Modify checkLightState to check if id=UNKNOWN; in this case, do as before;
+ *   in other case, call GetLightState(id)
+ * - Inside LightScheduler.c add MAX_EVENTS = 128 to the enum.
+ * - Inside LightScheduler.c create an array of ScheduledLightEvents 
+ * - In LightScheduler_Create() add a foor loop to initialize every id event in
+ *   scheduledEvents to UNUSED
+ * - Add a for loop in scheduleEvent() to find first event with id=UNUSED and 
+ *   update its values. Update scheduledEvent (the variable) as before.
+ * - In WakeUp() add a for loop to process every event. Keep the processEvent for
+ *   the scheduledEvent variable.
+ * - In LightController.h define MAX_LIGHTS = 32 (32 lights, 128 possible events)
+ * - In LightControllerSpy.c create an array lights[MAX_LIGHTS].
+ * - In LightControllerSpy_Create() initalize all lights to LIGHT_STATE_UNKNOWN.
+ * - Update LightController_ON() and _Off() to update lights[id] with the state.
+ * - Make GetLightState return the state for lights[id]
+ */
+TEST(LightScheduler, RememberAllLightStates)
+{
+    LightController_On(0);
+    LightController_On(31);
+    LONGS_EQUAL(LIGHT_ON, LightControllerSpy_GetLightState(0));
+    LONGS_EQUAL(LIGHT_ON, LightControllerSpy_GetLightState(31));
+}
+
+/**
+ * LightScheduler: ScheduleTwoEventsAtTheSameTime
+ * This test should pass when the previous one passes
+ */
+TEST(LightScheduler, ScheduleTwoEventsAtTheSameTime)
+{
+    LightScheduler_ScheduleTurnOn(3, SUNDAY, 1200);
+    LightScheduler_ScheduleTurnOn(12, SUNDAY, 1200);
+    setTimeTo(SUNDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(3, LIGHT_ON);
+    checkLightState(12, LIGHT_ON);
+}
+
+/******************************************************************************/
+/******************* LIGHT SCHEDULER INIT AND CLEANUP TESTS *******************/
+/******************************************************************************/
+
+TEST_GROUP(LightSchedulerInitAndCleanup)
+{
+
+};
+
+/**
+ * LightSchedulerInitAndCleanup: CreateStartsOneMinuteAlarm
+ * FakeTimeService_GetAlarmCallback() returns the scheduled callback for an
+ * event. When the Scheduler is created, this callback is defaulted to call
+ * WakeUp every 60 seconds.
+ * FakeTimeService spies on the call to this function.
+ * - In FakeTimeService.h declare FakeTimeService_GetAlarmCallback() that returns
+ *   a WakeUpCallback object. This type is defined in TimeService.h as a pointer
+ *   to a function, returning void.
+ * - In FakeTimeService.h declare FakeTimeService_GetAlarmPeriod() and
+ *   FakeTimeService_GetAlarmCallback()
+ * - Implement both with empty bodies.
+ * 
+ * Now we set a callback to be called by LightScheduler every 60 seconds.
+ * - To add a callback, a function must be created in TimeService.h, called
+ *   TimeService_SetPeriodicAlarmInSeconds().
+ * - This function is implemented in FakeTimeService.c to spy on the original.
+ *   It updates two static variables: period and callback.
+ * - In LightScheduler_Create(), call TimeService_SetPeriodicAlarmInSeconds()
+ *   calling LightScheduler_WakeUp() every 60 seconds.
+ * 
+ * We need to obtain the callback from FakeTimeService, implementing the
+ * previously GetAlarmCallback() and GetAlarmPeriod() functions.
+ * - Make the functions return the period and the callback, respectively.
+ */
+TEST(LightSchedulerInitAndCleanup, CreateStartsOneMinuteAlarm)
+{
+    LightScheduler_Create();
+    POINTERS_EQUAL((void *)LightScheduler_WakeUp,
+                   (void *)FakeTimeService_GetAlarmCallback());
+
+    LONGS_EQUAL(60, FakeTimeService_GetAlarmPeriod());
+    LightScheduler_Destroy();
+}
+
+/**
+ * LightSchedulerInitAndCleanup: DestroyCancelsOneMinuteAlarm
+ * - In LightScheduler_Destroy() call TimeService_CancelPeriodicAlarmInSeconds,
+ *   with args 60 and LightScheduler_WakeUp;
+ * - Declare this function in the interface for TimeService.h
+ * - Implement it in FakeTimeService.c, checking that period and callback are
+ *   equal to the current values and setting period=0 and callback=NULL
+ */
+TEST(LightSchedulerInitAndCleanup, DestroyCancelsOneMinuteAlarm)
+{
+    LightScheduler_Create();
+    LightScheduler_Destroy();
+    POINTERS_EQUAL(NULL, (void *)FakeTimeService_GetAlarmCallback());
 }
