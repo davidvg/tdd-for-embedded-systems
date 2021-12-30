@@ -16,7 +16,6 @@ typedef struct {
     int event;
 } ScheduledLightEvent;
 
-static ScheduledLightEvent scheduledEvent;
 static ScheduledLightEvent scheduledEvents[MAX_EVENTS];
 
 static void operateLight(ScheduledLightEvent * lightEvent)
@@ -68,16 +67,10 @@ static void scheduleEvent(int id, Day day, int minute, int event)
             break;
         }
     }
-    scheduledEvent.id = id;
-    scheduledEvent.day = day;
-    scheduledEvent.minuteOfDay = minute;
-    scheduledEvent.event = event;
 }
 
 void LightScheduler_Create(void)
 {
-    scheduledEvent.id = UNUSED;
-
     for (int i=0; i<MAX_EVENTS; i++)
     {
         scheduledEvents[i].id = UNUSED;
@@ -110,5 +103,4 @@ void LightScheduler_WakeUp(void)
     {
         processEventNow(&time, &scheduledEvents[i]);
     }
-    processEventNow(&time, &scheduledEvent);    
 }
