@@ -28,13 +28,14 @@ CPP_PLATFORM = Gcc
 
 SRC_DIRS = \
 	src \
-	util
+	../common/src
 
 TEST_SRC_DIRS = \
 	tests
 
 INCLUDE_DIRS = \
   . \
+  ../common/include \
   ./include \
   ./include/util \
   $(SRC_DIRS) \
