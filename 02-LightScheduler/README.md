@@ -7,8 +7,8 @@ This file describes the steps for creating the  `HomeAutomation` example.
 ```txt
 [X] Lights are not changed at initialization.
 [X] Day is wrong, time is wrong, no lights are changed.
-[ ] Day is right, time is wrong, no lights are changed.
-[ ] Day is wrong, time is right, no lights are changed.
+[X] Day is right, time is wrong, no lights are changed.
+[X] Day is wrong, time is right, no lights are changed.
 [X] Day is right, time is right, the right light is turned on.
 [X] Day is right, time is right, the right light is turned off.
 [X] Schedule every day, time is wrong, no changes.
@@ -16,13 +16,13 @@ This file describes the steps for creating the  `HomeAutomation` example.
 [X] Schedule a specific day.
 [X] Schedule all weekdays.
 [X] Schedule weekend days.
-[ ] Remove scheduled event.
+[X] Remove scheduled event.
 [ ] Remove non-existent event.
-[ ] Multiple scheduled events at the same time.
-[ ] Multiple scheduled events for the same light.
-[ ] Remove non scheduled light schedule.
-[ ] Schedule the maximum supported number of events (128)
-[ ] Schedule too many events.
+[X] Multiple scheduled events at the same time.
+[X] Multiple scheduled events for the same light.
+[X] Remove non scheduled light schedule.
+[X] Schedule the maximum supported number of events (128)
+[X] Schedule too many events.
 [X] No lights are scheduled and none turns on during wakeup.
 ```
 
@@ -64,4 +64,5 @@ The needded steps to pass the test is described in each test.
 1. `LightScheduler: RejectsTooManyEvents`
 1. `LightScheduler: RemoveRecyclesScheduleSlot`
 1. `LightScheduler: RemoveMultipleScheduledEvent`
+1. `LightScheduler: AcceptsValidLightIds`
 1. `LightScheduler: RejectsInvalidLights`
