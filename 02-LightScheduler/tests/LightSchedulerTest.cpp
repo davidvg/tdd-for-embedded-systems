@@ -304,6 +304,82 @@ TEST(LightScheduler, ScheduleTwoEventsAtTheSameTime)
     checkLightState(12, LIGHT_ON);
 }
 
+/**
+ * LightScheduler: RejectsTooManyEvents
+ * - In LightScheduler.h create an enum with the resunts for TurnOn() and
+ *   TurnOff()
+ * - Modify scheduleEvent() to check the number of scheduled events and return
+ *   these values.
+ * - Modify ScheduleTurnOn() and ScheduleTurnOff() to return the result of
+ *   scheduleEvent()
+ */
+TEST(LightScheduler, RejectsTooManyEvents)
+{
+    for (int i=0; i<128; i++)
+    {
+        LONGS_EQUAL(LS_OK, LightScheduler_ScheduleTurnOn(6, MONDAY, 600+i));
+    }
+    LONGS_EQUAL(LS_TOO_MANY_EVENTS, LightScheduler_ScheduleTurnOn(6, MONDAY, 750));
+}
+
+/**
+ * LightScheduler: RemoveRecyclesScheduleSlot
+ * - Declare ScheduleRemove() in the LightScheduler interface
+ * - Implement it by finding the event with correct id, day and minute and
+ *   setting id=UNUSED.
+ */
+TEST(LightScheduler, RemoveRecyclesScheduleSlot)
+{
+    for (int i=0; i<128; i++)
+    {
+        LONGS_EQUAL(LS_OK, LightScheduler_ScheduleTurnOn(6, MONDAY, 600+i));
+    }
+    LightScheduler_ScheduleRemove(6, MONDAY, 600);
+    LONGS_EQUAL(LS_OK, LightScheduler_ScheduleTurnOn(6, MONDAY, 1000));
+}
+
+/**
+ * LightScheduler: RemoveMultipleScheduledEvent
+ * This test should pass
+ */
+TEST(LightScheduler, RemoveMultipleScheduledEvent)
+{
+    LightScheduler_ScheduleTurnOn(6, MONDAY, 600);
+    LightScheduler_ScheduleTurnOn(7, MONDAY, 600);
+    LightScheduler_ScheduleRemove(6, MONDAY, 600);
+
+    setTimeTo(MONDAY, 600);
+    LightScheduler_WakeUp();
+
+    checkLightState(6, LIGHT_STATE_UNKNOWN);
+    checkLightState(7, LIGHT_ON);
+}
+
+/**
+ * LightScheduler: AcceptsValidLightIds
+ * This test should pass
+ */
+TEST(LightScheduler, AcceptsValidLightIds)
+{
+    LONGS_EQUAL(LS_OK, LightScheduler_ScheduleTurnOn(0, MONDAY, 600));
+    LONGS_EQUAL(LS_OK, LightScheduler_ScheduleTurnOn(15, MONDAY, 600));
+    LONGS_EQUAL(LS_OK, LightScheduler_ScheduleTurnOn(31, MONDAY, 600));
+}
+
+/**
+ * LightScheduler: RejectsInvalidLights
+ * - Add LS_ID_OUT_OF_BOUNDS to the enum in the LightScheduler interface
+ * - in scheduleEvent(), check for id range
+ */
+TEST(LightScheduler, RejectsInvalidLights)
+{
+    LONGS_EQUAL(LS_ID_OUT_OF_BOUNDS,
+                LightScheduler_ScheduleTurnOn(-1, MONDAY, 600));
+    LONGS_EQUAL(LS_ID_OUT_OF_BOUNDS,
+                LightScheduler_ScheduleTurnOn(32, MONDAY, 600));
+}
+
+
 /******************************************************************************/
 /******************* LIGHT SCHEDULER INIT AND CLEANUP TESTS *******************/
 /******************************************************************************/

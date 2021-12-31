@@ -61,3 +61,7 @@ The needded steps to pass the test is described in each test.
 1. `LightSchedulerInitAndCleanup: DestroyCancelsOneMinuteAlarm`
 1. `LightScheduler: RememberAllLightStates`
 1. `LightScheduler: ScheduleTwoEventsAtTheSameTime`
+1. `LightScheduler: RejectsTooManyEvents`
+1. `LightScheduler: RemoveRecyclesScheduleSlot`
+1. `LightScheduler: RemoveMultipleScheduledEvent`
+1. `LightScheduler: RejectsInvalidLights`

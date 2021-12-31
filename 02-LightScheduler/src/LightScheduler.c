@@ -54,8 +54,11 @@ static void processEventNow(Time *time, ScheduledLightEvent *lightEvent)
     operateLight(lightEvent);
 }
 
-static void scheduleEvent(int id, Day day, int minute, int event)
+static int scheduleEvent(int id, Day day, int minute, int event)
 {
+    if (id < 0 || id > MAX_LIGHTS-1)    // id goes from 0 to MAX_LIGHTS-1
+        return LS_ID_OUT_OF_BOUNDS;
+
     for (int i=0; i<MAX_EVENTS; i++)
     {
         if (scheduledEvents[i].id == UNUSED)
@@ -64,9 +67,10 @@ static void scheduleEvent(int id, Day day, int minute, int event)
             scheduledEvents[i].day = day;
             scheduledEvents[i].minuteOfDay = minute;
             scheduledEvents[i].event = event;
-            break;
+            return LS_OK;
         }
     }
+    return LS_TOO_MANY_EVENTS;
 }
 
 void LightScheduler_Create(void)
@@ -84,14 +88,28 @@ void LightScheduler_Destroy(void)
     TimeService_CancelPeriodicAlarmInSeconds(60, LightScheduler_WakeUp);
 }
 
-void LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
+int LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
 {
-    scheduleEvent(id, day, minuteOfDay, TURN_ON);
+    return scheduleEvent(id, day, minuteOfDay, TURN_ON);
 }
 
-void LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
+int LightScheduler_ScheduleTurnOff(int id, Day day, int minuteOfDay)
 {
-    scheduleEvent(id, day, minuteOfDay, TURN_OFF);
+
+    return scheduleEvent(id, day, minuteOfDay, TURN_OFF);
+}
+
+void LightScheduler_ScheduleRemove(int id, Day day, int minuteOfDay)
+{
+    for (int i=0; i<MAX_EVENTS; i++)
+    {
+        if (scheduledEvents[i].id == id
+            && scheduledEvents[i].day == day
+            && scheduledEvents[i].minuteOfDay == minuteOfDay)
+        {
+            scheduledEvents[i].id = UNUSED;
+        }
+    }
 }
 
 void LightScheduler_WakeUp(void)
