@@ -26,7 +26,9 @@ This file describes the steps for creating the  `HomeAutomation` example.
 [X] No lights are scheduled and none turns on during wakeup.
 ```
 
-## Doubles and mocks
+## `LightScheduler`, `LightController` and `TimeService`
+
+### Doubles and mocks
 
 The production headers, `LightController.h` and `TimeService.h`, are used as interfaces. Their corresponding `.c` files are not needed, as they are substituted by the test doubles, `LightControllerSpy` and `FakeTimeService`. For these doubles, a `.h` file includes the header fot the substituted component and this header is implemented in its `.c` file:
 
@@ -35,7 +37,7 @@ LightController.h --> LightControllerSpy.h --> LightControllerSpy.c
 ```
 
 
-## Tests and Interfaces
+### Tests and Interfaces
 
 The needded steps to pass the test is described in each test.
 
@@ -66,3 +68,13 @@ The needded steps to pass the test is described in each test.
 1. `LightScheduler: RemoveMultipleScheduledEvent`
 1. `LightScheduler: AcceptsValidLightIds`
 1. `LightScheduler: RejectsInvalidLights`
+
+
+## `RandomMinute`
+
+`RandomMinute_Get()` is used to return a random number in the range `[-BOUND, BOUND]`.
+
+### Tests
+
+1. `RandomMinute: GetIsInRange`
+1. `RandomMinute: AllValuesPossible`
