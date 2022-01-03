@@ -74,7 +74,14 @@ The needded steps to pass the test is described in each test.
 
 `RandomMinute_Get()` is used to return a random number in the range `[-BOUND, BOUND]`.
 
+To avoid this random behaviour in the tests, `FakeRandomMinute` is used. It creates numbers similar to those obtained with the original code, but without the random behaviour.
+
+The last test, `LightSchedulerRandomize:TusnrOnEarly`, takes a lot of code to pass. `LightScheduler_Randomize()` sets a new field in the `ScheduledLightEvent` struct: `randomize`. This field takes two possible values: `RANDOM_ON` and `RANDOM_OFF`. Then, it calls `RandomMinute_get()` to update `randomMinutes`, which will modify the event's `minuteOfDay`.
+
+Here we will substitute the original `RamdomMinute_Get()` by its double, using function pointers.
+
 ### Tests
 
 1. `RandomMinute: GetIsInRange`
 1. `RandomMinute: AllValuesPossible`
+1. `LightSchedulerRandomize:TusnrOnEarly`

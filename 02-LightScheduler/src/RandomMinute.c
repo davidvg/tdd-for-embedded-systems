@@ -6,11 +6,14 @@ static int bound = 0;
 void RandomMinute_Create(int b)
 {
     bound = b;
+    // srand(1);
 }
 
-int RandomMinute_Get(void)
+int RandomMinute_GetImpl(void)
 {
     // rand() returns an int with the size for the machine (32-bit)
     int result = bound - (rand() % (2*bound+1));
     return result;
 }
+
+int (*RandomMinute_Get)(void) = RandomMinute_GetImpl;

@@ -1,11 +1,14 @@
 #include "LightScheduler.h"
 #include "TimeService.h"
 #include "LightController.h"
+#include "RandomMinute.h"
 
 enum {
     UNUSED = -1,
     TURN_ON = 0,
     TURN_OFF,
+    RANDOM_ON,
+    RANDOM_OFF,
     MAX_EVENTS = 128,
 };
 
@@ -14,6 +17,8 @@ typedef struct {
     Day day;
     int minuteOfDay;
     int event;
+    int randomize;
+    int randomMinutes;
 } ScheduledLightEvent;
 
 static ScheduledLightEvent scheduledEvents[MAX_EVENTS];
@@ -44,9 +49,11 @@ static int doesLightRespondToday(Time *time, int reactionDay)
 
 static void processEventNow(Time *time, ScheduledLightEvent *lightEvent)
 {
+    int modifiedMinute = lightEvent->minuteOfDay + lightEvent->randomMinutes;
+
     if (lightEvent->id == UNUSED)
         return;
-    if (lightEvent->minuteOfDay != time->minuteOfDay)
+    if (modifiedMinute != time->minuteOfDay)
         return;
     if (!doesLightRespondToday(time, lightEvent->day))
         return;
@@ -67,6 +74,8 @@ static int scheduleEvent(int id, Day day, int minute, int event)
             scheduledEvents[i].day = day;
             scheduledEvents[i].minuteOfDay = minute;
             scheduledEvents[i].event = event;
+            scheduledEvents[i].randomize = RANDOM_OFF;
+            scheduledEvents[i].randomMinutes = 0;
             return LS_OK;
         }
     }
@@ -86,6 +95,17 @@ void LightScheduler_Create(void)
 void LightScheduler_Destroy(void)
 {
     TimeService_CancelPeriodicAlarmInSeconds(60, LightScheduler_WakeUp);
+}
+
+void LightScheduler_WakeUp(void)
+{
+    Time time;
+    TimeService_GetTime(&time);
+
+    for (int i=0; i<MAX_EVENTS; i++)
+    {
+        processEventNow(&time, &scheduledEvents[i]);
+    }
 }
 
 int LightScheduler_ScheduleTurnOn(int id, Day day, int minuteOfDay)
@@ -112,13 +132,18 @@ void LightScheduler_ScheduleRemove(int id, Day day, int minuteOfDay)
     }
 }
 
-void LightScheduler_WakeUp(void)
+void LightScheduler_Randomize(int id, Day day, int minuteOfDay)
 {
-    Time time;
-    TimeService_GetTime(&time);
-
     for (int i=0; i<MAX_EVENTS; i++)
     {
-        processEventNow(&time, &scheduledEvents[i]);
+        ScheduledLightEvent *event = &scheduledEvents[i];
+        if (event->id == id &&
+            event->day == day &&
+            event->minuteOfDay == minuteOfDay)
+        {
+            event->randomize = RANDOM_ON;
+            event->randomMinutes = RandomMinute_Get();
+        }
+        // break;  // TODO check this!!
     }
 }
