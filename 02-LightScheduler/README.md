@@ -85,3 +85,10 @@ Here we will substitute the original `RamdomMinute_Get()` by its double, using f
 1. `RandomMinute: GetIsInRange`
 1. `RandomMinute: AllValuesPossible`
 1. `LightSchedulerRandomize:TusnrOnEarly`
+
+
+## `FormatOutputSpy`
+
+### Tests
+
+1. `FormatOutputSpy: HelloWorld`
