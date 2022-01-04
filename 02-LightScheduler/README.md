@@ -92,3 +92,5 @@ Here we will substitute the original `RamdomMinute_Get()` by its double, using f
 ### Tests
 
 1. `FormatOutputSpy: HelloWorld`
+1. `FormatOutputSpy: LimitTheOutputBufferSize`
+1. `FormatOutputSpy: PrintMultipleTimes`

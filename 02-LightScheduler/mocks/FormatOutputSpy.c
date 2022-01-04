@@ -5,14 +5,16 @@
 
 static char * buffer = 0;
 static size_t buffer_size = 0;
-// static int buffer_offset = 0;
-// static size_t buffer_used = 0;
+static int buffer_offset = 0;
+static size_t buffer_used = 0;
 
 
 void FormatOutputSpy_Create(int size)
 {
     buffer_size = (size_t)(size + 1);
     buffer = (char *) calloc(buffer_size, sizeof(char));
+    buffer_offset = 0;
+    buffer_used = 0;
 }
 
 void FormatOutputSpy_Destroy(void)
@@ -32,11 +34,12 @@ int FormatOutputSpy(const char * format, ...)
      * int vsnprintf (char * buf, size_t n, const char * format, va_list arg )
      * Write formatted data from variable argument list to sized buffer.
      */
-    int written_size = vsnprintf(buffer,
-                                 buffer_size,
+    int written_size = vsnprintf(buffer + buffer_offset,
+                                 buffer_size - buffer_used,
                                  format,
                                  args);
-
+    buffer_offset += written_size;
+    buffer_used += (size_t)written_size;
     va_end(args);
     return 1;
 }

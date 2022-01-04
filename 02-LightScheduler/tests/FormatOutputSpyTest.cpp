@@ -47,12 +47,30 @@ TEST(FormatOutputSpy, HelloWorld)
 
 /**
  * FormatOutputSpy: LimitTheOutputBufferSize
- * 
- * static int buffer_offset, static size_t buffer_used.
- * - Update buffer_offset adding the value of written_size
+ * The test should pass.
  */
-// TEST(FormatOutputSpy, LimitTheOutputBufferSize)
-// {
-//     FormatOutputSpy_Create(4);
-//     FormatOutput("Hello World\n");
-// }
+TEST(FormatOutputSpy, LimitTheOutputBufferSize)
+{
+    FormatOutputSpy_Create(4);
+    FormatOutput("Hello World\n");
+    STRCMP_EQUAL("Hell", FormatOutputSpy_GetOutput());
+}
+
+/**
+ * FormatOutputSpy: PrintMultipleTimes
+ * - FormatOutputSpy.c: define static int buffer_offset, static size_t buffer_used
+ * - In FormatOutputSpy_Create() reset buffer_offset=0 and buffer_used=0 to make
+ *   a clean buffer when the object is created. This is only for new buffers, not
+ *   for buffers that are written multiple times.
+ * - in vsnprintf() use specify buffer start position (buffer+buffer_offset) and
+ *   buffer available size (buffer_size-buffer_used)
+ * - Update buffer_offset adding the value of written_size
+ * - Update buffer_used adding the value of written_size
+ */
+TEST(FormatOutputSpy, PrintMultipleTimes)
+{
+    FormatOutputSpy_Create(25);
+    FormatOutput("Hello");
+    FormatOutput(", World\n");
+    STRCMP_EQUAL("Hello, World\n", FormatOutputSpy_GetOutput());
+}
