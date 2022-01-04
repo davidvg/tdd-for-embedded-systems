@@ -9,7 +9,7 @@ void RandomMinute_Create(int b)
     // srand(1);
 }
 
-int RandomMinute_GetImpl(void)
+static int RandomMinute_GetImpl(void)
 {
     // rand() returns an int with the size for the machine (32-bit)
     int result = bound - (rand() % (2*bound+1));
