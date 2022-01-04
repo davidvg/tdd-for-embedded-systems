@@ -9,7 +9,3 @@ lib
 **/*.out
 *_tests
 **/*.map
-02-LightScheduler/__store/FakeTimeService.h
-02-LightScheduler/__store/LightController_h.txt
-02-LightScheduler/__store/LightScheduler_h.txt
-02-LightScheduler/__store/TimeService_h.txt

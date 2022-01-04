@@ -38,11 +38,11 @@ TARGET = $(TARGET_BASE)$(TARGET_EXTENSION)
 SRC_FILES=$(UNITY_ROOT)/src/unity.c \
 	src/LedDriver.c \
 	test/TestLedDriver.c \
-	../common/src/RuntimeErrorStub.c
+	../mocks/RuntimeErrorStub.c
 
 INC_DIRS=-Isrc \
 		 -Iinclude \
-		 -I../common/include \
+		 -I../include/util \
 		 -I$(UNITY_ROOT)/src
 
 SYMBOLS=
