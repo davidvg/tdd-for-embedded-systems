@@ -9,3 +9,5 @@ lib
 **/*.out
 *_tests
 **/*.map
+
+**/circular-buffer-TDD
