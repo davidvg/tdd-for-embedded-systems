@@ -1,14 +1,14 @@
 #include "CircularBuffer.h"
 
 
-CircularBuffer CircularBuffer_Create(size_t size)
+CircularBuffer CircularBuffer_Create(size_t capacity)
 {
     CircularBuffer circBuff;
-    circBuff.size = size;    
+    circBuff.capacity = capacity;    
     circBuff.write = 0;
     circBuff.read = 0;
 
-    size_t s = sizeof(int) * size;
+    size_t s = sizeof(int) * capacity;
     int *b;
     b = (int *) malloc(s);
     circBuff.buf = b;
@@ -18,7 +18,7 @@ CircularBuffer CircularBuffer_Create(size_t size)
 
 void CircularBuffer_Destroy(CircularBuffer *cb)
 {
-    cb->size = 0;
+    cb->capacity = 0;
     cb->write = cb->read = 0;
     free(cb->buf);
 }
@@ -30,7 +30,7 @@ bool CircularBuffer_IsEmpty(CircularBuffer *cb)
 
 bool CircularBuffer_IsFull(CircularBuffer *cb)
 {
-    return false;
+    return (cb->write - cb->read == cb->capacity);
 }
 
 void CircularBuffer_Put(CircularBuffer *cb, int val)
@@ -44,4 +44,9 @@ int CircularBuffer_Get(CircularBuffer *cb)
     int retval = cb->buf[cb->read];
     cb->read += 1;
     return retval;
+}
+
+size_t CircularBuffer_GetCapacity(CircularBuffer *cb)
+{
+    return cb->capacity;
 }

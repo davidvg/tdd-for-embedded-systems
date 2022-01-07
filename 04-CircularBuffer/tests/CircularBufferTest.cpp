@@ -10,10 +10,11 @@ extern "C"
 TEST_GROUP(CircularBuffer)
 {
     CircularBuffer buffer;
+    size_t capacity = 16;
 
     void setup()
     {
-    buffer = CircularBuffer_Create(10);
+    buffer = CircularBuffer_Create(capacity);
     }
 
     void teardown()
@@ -96,4 +97,62 @@ TEST(CircularBuffer, GetReturnsPutValue)
 {
     CircularBuffer_Put(&buffer, 42);
     LONGS_EQUAL(42, CircularBuffer_Get(&buffer));
+}
+
+/**
+ * CircularBuffer: PutAndGetMultipleValues
+ * This test should pass
+ */
+TEST(CircularBuffer, PutAndGetMultipleValues)
+{
+    CircularBuffer_Put(&buffer, 101);
+    CircularBuffer_Put(&buffer, 102);
+    CircularBuffer_Put(&buffer, 103);
+    LONGS_EQUAL(101, CircularBuffer_Get(&buffer));
+    LONGS_EQUAL(102, CircularBuffer_Get(&buffer));
+    LONGS_EQUAL(103, CircularBuffer_Get(&buffer));
+}
+
+/**
+ * CircularBuffer: GetBufferCapacity
+ * - Declare CircularBuffer_GetCapacity() and return cb.capacity
+ */
+TEST(CircularBuffer, GetBufferCapacity)
+{
+    LONGS_EQUAL(capacity, CircularBuffer_GetCapacity(&buffer));
+}
+
+/**
+ * CircularBuffer: BufferIsFull
+ * - Modify _IsFull() to return write-read==capacity
+ */
+TEST(CircularBuffer, BufferIsFull)
+{
+    int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
+    for (int i=0; i<bufCapacity; i++)
+    {
+        CircularBuffer_Put(&buffer, 100+i);
+    }
+    CHECK_TRUE(CircularBuffer_IsFull(&buffer));
+}
+
+/**
+ * CircularBuffer: EmptyToFullToEmpty
+ * This test should pass
+ */
+TEST(CircularBuffer, EmptyToFullToEmpty)
+{
+    int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
+    for (int i=0; i<bufCapacity; i++)
+    {
+        CircularBuffer_Put(&buffer, 100+i);
+    }
+    CHECK_TRUE(CircularBuffer_IsFull(&buffer));
+
+    for (int i=0; i<bufCapacity; i++)
+    {
+        LONGS_EQUAL(100+i, CircularBuffer_Get(&buffer));
+    }
+    CHECK_FALSE(CircularBuffer_IsFull(&buffer));
+    CHECK_TRUE(CircularBuffer_IsEmpty(&buffer));
 }
