@@ -31,6 +31,6 @@ INCLUDE_DIRS = \
   $(SRC_DIRS) \
   $(CPPUTEST_HOME)/include
 
-MOCKS_SRC_DIRS = mocks
+MOCKS_SRC_DIRS = mocks ../mocks
 
 include $(CPPUTEST_HOME)/build/MakefileWorker.mk

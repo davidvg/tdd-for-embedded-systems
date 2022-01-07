@@ -2,15 +2,14 @@
 
 extern "C"
 {
-#include "CircularBuffer.h"
-// #include "FormatOutputSpy.h"
+    #include "CircularBuffer.h"
 }
 
 
 TEST_GROUP(CircularBuffer)
 {
     CircularBuffer buffer;
-    size_t capacity = 16;
+    size_t capacity = 8;
 
     void setup()
     {
@@ -38,6 +37,32 @@ TEST(CircularBuffer, EmptyAfterCreation)
 }
 
 /**
+ * CircularBuffer: CapacityIsPowerOfTwoReturnsErrorCode
+ * - CircularBuffer.h: create enum with error codes
+ * - In the struct add a CBError error field
+ * - Create static function to check capacity = 2^n
+ * - In Create() check if is power of two and initilize with error and
+ *   capacity=0, to create a buffer with size 0
+ * - Add a RUNTIME_ERROR when capacity is wrong
+ */
+TEST(CircularBuffer, CapacityNotPowerOfTwoReturnsErrorCode)
+{
+    CircularBuffer b = CircularBuffer_Create(10);
+    LONGS_EQUAL(CAPACITY_NOT_POWER_OF_TWO, b.error);
+    STRCMP_EQUAL("Capacity is not a power of two", RuntimeErrorStub_GetLastError());
+    LONGS_EQUAL(10, RuntimeErrorStub_GetLastParameter());
+    CircularBuffer_Destroy(&b);
+}
+
+/**
+ * CircularBuffer: CapacityIsPowerOfTwoReturnsNoError
+ */
+TEST(CircularBuffer, CapacityIsPowerOfTwoReturnsNoError)
+{
+    LONGS_EQUAL(NOERROR, buffer.error);
+}
+
+/**
  * CircularBuffer: NotFullAfterCreation
  * TODO Check if this test does anything
  * - CircularBuffer.c: define CircularBuffer_IsFull(*cb) and implement it to
@@ -47,14 +72,6 @@ TEST(CircularBuffer, NotFullAfterCreation)
 {
     CHECK_FALSE(CircularBuffer_IsFull(&buffer));
 }
-
-/**
- * CircularBuffer: BufferLengthIsPowerOfTwo
- * TODO Test: check that buffer length is a power of two
- */
-// TEST(CircularBuffer, BufferLengthIsPowerOfTwo)
-// {
-// }
 
 /**
  * CircularBuffer: NotEmptyAfterPut
@@ -76,12 +93,12 @@ TEST(CircularBuffer, NotEmptyAfterPut)
 }
 
 /**
- * CircularBuffer: NotEMptyAfterPutThenEmptyAfterGet
+ * CircularBuffer: NotEmptyAfterPutThenEmptyAfterGet
  * TODO The previous test does the same than this one
  * - Declare CircularBuffer_Get(*cb)
  * - In _Get() return cb.buf[cb.read] and increment cb.read
  */
-TEST(CircularBuffer, NotEMptyAfterPutThenEmptyAfterGet)
+TEST(CircularBuffer, NotEmptyAfterPutThenEmptyAfterGet)
 {
     CircularBuffer_Put(&buffer, 1234);
     CHECK_FALSE(CircularBuffer_IsEmpty(&buffer));

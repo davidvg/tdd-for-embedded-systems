@@ -2,6 +2,9 @@
  * CircularBuffer.h
  * 
  * Implementation of a Circular Buffer for integer values.
+ * 
+ * A guide for implementing full buffer using bool:
+ * https://embeddedartistry.com/blog/2017/05/17/creating-a-circular-buffer-in-c-and-c/
  *  
  */
 
@@ -9,6 +12,14 @@
 #define D_CIRCULAR_BUFFER_H
 
 #include <stdbool.h>
+#include "RuntimeError.h"
+#include "RuntimeErrorStub.h"
+
+typedef enum
+{
+    NOERROR=0,
+    CAPACITY_NOT_POWER_OF_TWO,
+} CBError;
 
 typedef struct
 {
@@ -16,6 +27,7 @@ typedef struct
     int *buf;
     size_t write;
     size_t read;
+    CBError error;
 } CircularBuffer;
 
 CircularBuffer CircularBuffer_Create(size_t capacity);

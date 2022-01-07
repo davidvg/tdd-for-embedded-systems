@@ -1,18 +1,39 @@
 #include "CircularBuffer.h"
 
+#include <stdio.h>
+
+static void CircularBuffer_Initialize(CircularBuffer *cb, size_t cap, CBError err)
+{
+    cb->capacity = cap;
+    cb->write = 0;
+    cb->read = 0;
+    cb->error = err;
+
+    size_t s = sizeof(int) * cb->capacity;
+    int *b;
+    b = (int *) malloc(s);
+    cb->buf = b;
+}
+
+static bool CircularBuffer_CapacityIsPowerOfTwo(size_t cap)
+{
+    return (cap & (cap - 1)) == 0;
+}
 
 CircularBuffer CircularBuffer_Create(size_t capacity)
 {
     CircularBuffer circBuff;
-    circBuff.capacity = capacity;    
-    circBuff.write = 0;
-    circBuff.read = 0;
 
-    size_t s = sizeof(int) * capacity;
-    int *b;
-    b = (int *) malloc(s);
-    circBuff.buf = b;
-    
+    if (CircularBuffer_CapacityIsPowerOfTwo(capacity))
+    {
+        CircularBuffer_Initialize(&circBuff, capacity, NOERROR);
+    }
+    else
+    {
+        RUNTIME_ERROR("Capacity is not a power of two", (int)capacity);
+        CircularBuffer_Initialize(&circBuff, 0, CAPACITY_NOT_POWER_OF_TWO);
+    }
+
     return circBuff;
 }
 
@@ -20,6 +41,7 @@ void CircularBuffer_Destroy(CircularBuffer *cb)
 {
     cb->capacity = 0;
     cb->write = cb->read = 0;
+    cb->error = NOERROR;
     free(cb->buf);
 }
 
