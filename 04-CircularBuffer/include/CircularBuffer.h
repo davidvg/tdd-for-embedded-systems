@@ -1,9 +1,16 @@
+/**
+ * CircularBuffer.h
+ * 
+ * Implementation of a Circular Buffer for integer values.
+ *  
+ */
+
 #ifndef D_CIRCULAR_BUFFER_H
 #define D_CIRCULAR_BUFFER_H
 
 #include <stdbool.h>
 
-typedef struct CircularBuffer
+typedef struct
 {
     size_t size;
     int *buf;

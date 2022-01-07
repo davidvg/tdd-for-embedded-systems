@@ -6,7 +6,6 @@ extern "C"
 // #include "FormatOutputSpy.h"
 }
 
-// TODO Test: check that buffer length is a power of two
 
 TEST_GROUP(CircularBuffer)
 {
@@ -49,6 +48,14 @@ TEST(CircularBuffer, NotFullAfterCreation)
 }
 
 /**
+ * CircularBuffer: BufferLengthIsPowerOfTwo
+ * TODO Test: check that buffer length is a power of two
+ */
+// TEST(CircularBuffer, BufferLengthIsPowerOfTwo)
+// {
+// }
+
+/**
  * CircularBuffer: NotEmptyAfterPut
  * - Declare CircularBuffer_Put(*cb, value)
  * - CircularBuffer.h: add int *buf and the two indices: int read and int write
@@ -79,4 +86,14 @@ TEST(CircularBuffer, NotEMptyAfterPutThenEmptyAfterGet)
     CHECK_FALSE(CircularBuffer_IsEmpty(&buffer));
     CircularBuffer_Get(&buffer);
     CHECK_TRUE(CircularBuffer_IsEmpty(&buffer));
+}
+
+/**
+ * CircularBuffer: GetReturnsPutValue
+ * This test should pass
+ */
+TEST(CircularBuffer, GetReturnsPutValue)
+{
+    CircularBuffer_Put(&buffer, 42);
+    LONGS_EQUAL(42, CircularBuffer_Get(&buffer));
 }
