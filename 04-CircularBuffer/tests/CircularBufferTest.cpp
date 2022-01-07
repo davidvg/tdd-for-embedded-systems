@@ -141,15 +141,21 @@ TEST(CircularBuffer, GetBufferCapacity)
 
 /**
  * CircularBuffer: BufferIsFull
- * - Modify _IsFull() to return write-read==capacity
+ * The buffer is considered FULL when there's only one free position for 
+ * write in the buffer. This allows to distinguish between empty and full
+ * buffers.
+ * - In _IsFull() return true when write-read = capacity-1
  */
 TEST(CircularBuffer, BufferIsFull)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
-    for (int i=0; i<bufCapacity; i++)
+    for (int i=0; i<bufCapacity-2; i++)
     {
         CircularBuffer_Put(&buffer, 100+i);
     }
+    CHECK_FALSE(CircularBuffer_IsFull(&buffer));
+
+    CircularBuffer_Put(&buffer, 999);
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
 }
 
@@ -160,13 +166,13 @@ TEST(CircularBuffer, BufferIsFull)
 TEST(CircularBuffer, EmptyToFullToEmpty)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
-    for (int i=0; i<bufCapacity; i++)
+    for (int i=0; i<bufCapacity-1; i++)
     {
         CircularBuffer_Put(&buffer, 100+i);
     }
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
 
-    for (int i=0; i<bufCapacity; i++)
+    for (int i=0; i<bufCapacity-1; i++)
     {
         LONGS_EQUAL(100+i, CircularBuffer_Get(&buffer));
     }
@@ -182,7 +188,7 @@ TEST(CircularBuffer, EmptyToFullToEmpty)
 TEST(CircularBuffer, PutWhenFullReturnsFalse)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
-    for (int i=0; i<bufCapacity; i++)
+    for (int i=0; i<bufCapacity-1; i++)
     {
         CircularBuffer_Put(&buffer, 100+i);
     }

@@ -1,6 +1,5 @@
 #include "CircularBuffer.h"
 
-#include <stdio.h>
 
 static void CircularBuffer_Initialize(CircularBuffer *cb, size_t cap, CBError err)
 {
@@ -52,7 +51,7 @@ bool CircularBuffer_IsEmpty(CircularBuffer *cb)
 
 bool CircularBuffer_IsFull(CircularBuffer *cb)
 {
-    return (cb->write - cb->read == cb->capacity);
+    return (cb->write - cb->read == cb->capacity - 1);
 }
 
 bool CircularBuffer_Put(CircularBuffer *cb, int val)
