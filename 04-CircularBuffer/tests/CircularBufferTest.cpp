@@ -156,3 +156,19 @@ TEST(CircularBuffer, EmptyToFullToEmpty)
     CHECK_FALSE(CircularBuffer_IsFull(&buffer));
     CHECK_TRUE(CircularBuffer_IsEmpty(&buffer));
 }
+
+/**
+ * CircularBuffer: PutWhenFullReturnsFalse
+ * - Modify _Put() to return true on success, false on failure, by checking
+ *   using CircularBuffer_IsFull()
+ */
+TEST(CircularBuffer, PutWhenFullReturnsFalse)
+{
+    int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
+    for (int i=0; i<bufCapacity; i++)
+    {
+        CircularBuffer_Put(&buffer, 100+i);
+    }
+    CHECK_TRUE(CircularBuffer_IsFull(&buffer));
+    CHECK_FALSE(CircularBuffer_Put(&buffer, 999));
+}
