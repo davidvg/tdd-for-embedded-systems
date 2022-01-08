@@ -52,7 +52,8 @@ TEST(CircularBuffer, NotFullAfterCreation)
  * - Declare CircularBuffer_Put(*cb, value)
  * - CircularBuffer.h: add int *buf and the two indices: int read and int write
  *   to the CircularBuffer struct
- * - In Create() initialize size to the size argument and both indices to 0
+ * - In Create() initialize capacity to the capacity argument + 1 and both
+ *   indices to 0
  * - In create(), allocate an array of ints b using malloc and make cb.buf = b
  *   and make cb->buf = b
  * - In CB_Put() set the element with index cb.write to the value and increment
@@ -171,4 +172,58 @@ TEST(CircularBuffer, PutWhenFullReturnsFalseAndThrowsRuntimeError)
     }
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
     LONGS_EQUAL(BUFFER_IS_FULL, CircularBuffer_Put(&buffer, 999));
+}
+
+/**
+ * CircularBuffer, WrapIndices
+ * - Modify _Put() and _Get() to update indices using NextIndex()
+ */
+TEST(CircularBuffer, WrapIndicesWhenPutting)
+{
+    int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
+    // Fill the buffer. Result: cap=10+1, w=10, r=0
+    for (int i=0; i<bufCapacity; i++)
+    {
+        CircularBuffer_Put(&buffer, 100+i);
+    }
+    CHECK_TRUE(CircularBuffer_IsFull(&buffer));
+    // Get one item. Result: cap=10+1, w=10, r=1
+    LONGS_EQUAL(100, CircularBuffer_Get(&buffer));
+    CHECK_FALSE(CircularBuffer_IsFull(&buffer));
+    //  Put a new item and check wrapping for write. Result: cap=10+1, w=0, r=1
+    CircularBuffer_Put(&buffer, 200);
+    CHECK_TRUE(CircularBuffer_IsFull(&buffer));
+}
+
+/**
+ * CircularBuffer: WrapIndicesWhenGetting
+ * The test should pass
+ */
+TEST(CircularBuffer, WrapIndicesWhenGetting)
+{
+    int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
+    // Fill the buffer
+    for (int i=0; i<bufCapacity; i++)
+    {
+        CircularBuffer_Put(&buffer, 100+i);
+    }
+    CHECK_TRUE(CircularBuffer_IsFull(&buffer));
+    // Leave only 1 item in the buffer
+    for (int i=0; i<bufCapacity-1; i++)
+    {
+        LONGS_EQUAL(100+i, CircularBuffer_Get(&buffer));
+    }
+    // Put capacity/2 items in the buffer
+    for (int i=0; i<bufCapacity/2; i++)
+    {
+        CircularBuffer_Put(&buffer, 100 + (int)cap + i);
+    }
+    // Get all the elements
+    int j = 0;
+    while(!CircularBuffer_IsEmpty(&buffer))
+    {
+        LONGS_EQUAL(100 + (int)cap - 1 + j, CircularBuffer_Get(&buffer));
+        j++;
+    }
+    CHECK_TRUE(CircularBuffer_IsEmpty(&buffer));
 }

@@ -1,9 +1,14 @@
 #include "CircularBuffer.h"
 
-
+/**
+ * The buffer is considered full when there's one free slot for write.
+ * To have a full capacity, without losing one slot, the actual buffer size
+ * is defined as capacity+1. This way the buffer will be full when 'capacity'
+ * elements have been written.
+ */
 static void CircularBuffer_Initialize(CircularBuffer *cb, size_t cap, CBError err)
 {
-    cb->capacity = cap;
+    cb->capacity = cap + 1;
     cb->write = 0;
     cb->read = 0;
     cb->error = err;
@@ -16,22 +21,16 @@ static void CircularBuffer_Initialize(CircularBuffer *cb, size_t cap, CBError er
 
 size_t CircularBuffer_NextIndex(size_t index, size_t capacity)
 {
-    index++;
+    index += 1;
     if (index == capacity)
         index = 0;
     return index;
 }
 
-/**
- * The buffer is considered full when there's one free slot for write.
- * To have a full capacity, without losing one slot, the actual buffer size
- * is defined as capacity+1. This way the buffer will be full when 'capacity'
- * elements have been written.
- */
 CircularBuffer CircularBuffer_Create(size_t capacity)
 {
     CircularBuffer circBuff;
-    CircularBuffer_Initialize(&circBuff, capacity+1, NOERROR);
+    CircularBuffer_Initialize(&circBuff, capacity, NOERROR);
     return circBuff;
 }
 
@@ -64,14 +63,14 @@ CBError CircularBuffer_Put(CircularBuffer *cb, int val)
     }
 
     cb->buf[cb->write] = val;
-    cb->write += 1;
+    cb->write = CircularBuffer_NextIndex(cb->write, cb->capacity);
     return NOERROR;
 }
 
 int CircularBuffer_Get(CircularBuffer *cb)
 {
     int retval = cb->buf[cb->read];
-    cb->read += 1;
+    cb->read = CircularBuffer_NextIndex(cb->read, cb->capacity);
     return retval;
 }
 
