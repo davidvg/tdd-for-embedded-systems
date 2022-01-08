@@ -20,6 +20,14 @@ TEST_GROUP(CircularBuffer)
     {
         CircularBuffer_Destroy(&buffer);
     }
+
+    void putManyInTheBuffer(int howMany, int offset)
+    {
+        for (int i=0; i<howMany; i++)
+        {
+            CircularBuffer_Put(&buffer, i+offset);
+        }
+    }
 };
 
 /**
@@ -97,12 +105,10 @@ TEST(CircularBuffer, GetReturnsPutValue)
  */
 TEST(CircularBuffer, PutAndGetMultipleValues)
 {
-    CircularBuffer_Put(&buffer, 101);
-    CircularBuffer_Put(&buffer, 102);
-    CircularBuffer_Put(&buffer, 103);
+    putManyInTheBuffer(3, 100);
+    LONGS_EQUAL(100, CircularBuffer_Get(&buffer));
     LONGS_EQUAL(101, CircularBuffer_Get(&buffer));
     LONGS_EQUAL(102, CircularBuffer_Get(&buffer));
-    LONGS_EQUAL(103, CircularBuffer_Get(&buffer));
 }
 
 /**
@@ -126,10 +132,7 @@ TEST(CircularBuffer, GetBufferCapacity)
 TEST(CircularBuffer, BufferIsFull)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
-    for (int i=0; i<bufCapacity-1; i++)
-    {
-        CircularBuffer_Put(&buffer, 100+i);
-    }
+    putManyInTheBuffer(bufCapacity-1, 100);
     CHECK_FALSE(CircularBuffer_IsFull(&buffer));
 
     CircularBuffer_Put(&buffer, 999);
@@ -143,10 +146,7 @@ TEST(CircularBuffer, BufferIsFull)
 TEST(CircularBuffer, EmptyToFullToEmpty)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
-    for (int i=0; i<bufCapacity; i++)
-    {
-        CircularBuffer_Put(&buffer, 100+i);
-    }
+    putManyInTheBuffer(bufCapacity, 100);
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
 
     for (int i=0; i<bufCapacity; i++)
@@ -166,10 +166,7 @@ TEST(CircularBuffer, EmptyToFullToEmpty)
 TEST(CircularBuffer, PutWhenFullReturnsFalseAndThrowsRuntimeError)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
-    for (int i=0; i<bufCapacity; i++)
-    {
-        LONGS_EQUAL(NOERROR, CircularBuffer_Put(&buffer, 100+i));
-    }
+    putManyInTheBuffer(bufCapacity, 100);
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
     LONGS_EQUAL(BUFFER_IS_FULL, CircularBuffer_Put(&buffer, 999));
 }
@@ -182,10 +179,7 @@ TEST(CircularBuffer, WrapIndicesWhenPutting)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
     // Fill the buffer. Result: cap=10+1, w=10, r=0
-    for (int i=0; i<bufCapacity; i++)
-    {
-        CircularBuffer_Put(&buffer, 100+i);
-    }
+    putManyInTheBuffer(bufCapacity, 100);
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
     // Get one item. Result: cap=10+1, w=10, r=1
     LONGS_EQUAL(100, CircularBuffer_Get(&buffer));
@@ -203,10 +197,7 @@ TEST(CircularBuffer, WrapIndicesWhenGetting)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
     // Fill the buffer
-    for (int i=0; i<bufCapacity; i++)
-    {
-        CircularBuffer_Put(&buffer, 100+i);
-    }
+    putManyInTheBuffer(bufCapacity, 100);
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
     // Leave only 1 item in the buffer
     for (int i=0; i<bufCapacity-1; i++)
@@ -214,10 +205,7 @@ TEST(CircularBuffer, WrapIndicesWhenGetting)
         LONGS_EQUAL(100+i, CircularBuffer_Get(&buffer));
     }
     // Put capacity/2 items in the buffer
-    for (int i=0; i<bufCapacity/2; i++)
-    {
-        CircularBuffer_Put(&buffer, 100 + (int)cap + i);
-    }
+    putManyInTheBuffer(bufCapacity/2, 100+(int)cap);
     // Get all the elements
     int j = 0;
     while(!CircularBuffer_IsEmpty(&buffer))
