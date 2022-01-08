@@ -106,7 +106,8 @@ TEST(CircularBuffer, PutAndGetMultipleValues)
 
 /**
  * CircularBuffer: GetBufferCapacity
- * - Declare CircularBuffer_GetCapacity() and return cb.capacity
+ * - Declare CircularBuffer_GetCapacity() and return cb.capacity-1 (the actual
+ *   buffer size is capacity+1 to allow a complete full buffer)
  */
 TEST(CircularBuffer, GetBufferCapacity)
 {
@@ -118,12 +119,13 @@ TEST(CircularBuffer, GetBufferCapacity)
  * The buffer is considered FULL when there's only one free position for 
  * write in the buffer. This allows to distinguish between empty and full
  * buffers.
- * - In _IsFull() return true when write-read = capacity-1
+ * - Create a function CB_NextIndex(ix, cap) to compute next value for the index
+ * - In _IsFull() return true when NextIndex(write, cap) = read
  */
 TEST(CircularBuffer, BufferIsFull)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
-    for (int i=0; i<bufCapacity-2; i++)
+    for (int i=0; i<bufCapacity-1; i++)
     {
         CircularBuffer_Put(&buffer, 100+i);
     }
@@ -140,13 +142,13 @@ TEST(CircularBuffer, BufferIsFull)
 TEST(CircularBuffer, EmptyToFullToEmpty)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
-    for (int i=0; i<bufCapacity-1; i++)
+    for (int i=0; i<bufCapacity; i++)
     {
         CircularBuffer_Put(&buffer, 100+i);
     }
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
 
-    for (int i=0; i<bufCapacity-1; i++)
+    for (int i=0; i<bufCapacity; i++)
     {
         LONGS_EQUAL(100+i, CircularBuffer_Get(&buffer));
     }
@@ -163,7 +165,7 @@ TEST(CircularBuffer, EmptyToFullToEmpty)
 TEST(CircularBuffer, PutWhenFullReturnsFalseAndThrowsRuntimeError)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
-    for (int i=0; i<bufCapacity-1; i++)
+    for (int i=0; i<bufCapacity; i++)
     {
         LONGS_EQUAL(NOERROR, CircularBuffer_Put(&buffer, 100+i));
     }
