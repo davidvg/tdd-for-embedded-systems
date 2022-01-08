@@ -54,16 +54,16 @@ bool CircularBuffer_IsFull(CircularBuffer *cb)
     return (cb->write - cb->read == cb->capacity - 1);
 }
 
-bool CircularBuffer_Put(CircularBuffer *cb, int val)
+CBError CircularBuffer_Put(CircularBuffer *cb, int val)
 {
     if (CircularBuffer_IsFull(cb))
     {
-        return false;
+        return BUFFER_IS_FULL;
     }
 
     cb->buf[cb->write] = val;
     cb->write += 1;
-    return true;
+    return NOERROR;
 }
 
 int CircularBuffer_Get(CircularBuffer *cb)

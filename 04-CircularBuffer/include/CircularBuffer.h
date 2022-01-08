@@ -19,6 +19,7 @@ typedef enum
 {
     NOERROR=0,
     CAPACITY_NOT_POWER_OF_TWO,
+    BUFFER_IS_FULL,
 } CBError;
 
 typedef struct
@@ -34,7 +35,7 @@ CircularBuffer CircularBuffer_Create(size_t capacity);
 void CircularBuffer_Destroy(CircularBuffer *cb);
 bool CircularBuffer_IsEmpty(CircularBuffer *cb);
 bool CircularBuffer_IsFull(CircularBuffer *cb);
-bool CircularBuffer_Put(CircularBuffer *cb, int val);
+CBError CircularBuffer_Put(CircularBuffer *cb, int val);
 int CircularBuffer_Get(CircularBuffer *cb);
 size_t CircularBuffer_GetCapacity(CircularBuffer *cb);
 

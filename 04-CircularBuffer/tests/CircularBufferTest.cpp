@@ -9,11 +9,11 @@ extern "C"
 TEST_GROUP(CircularBuffer)
 {
     CircularBuffer buffer;
-    size_t capacity = 8;
+    size_t cap = 8;
 
     void setup()
     {
-    buffer = CircularBuffer_Create(capacity);
+    buffer = CircularBuffer_Create(cap);
     }
 
     void teardown()
@@ -136,7 +136,7 @@ TEST(CircularBuffer, PutAndGetMultipleValues)
  */
 TEST(CircularBuffer, GetBufferCapacity)
 {
-    LONGS_EQUAL(capacity, CircularBuffer_GetCapacity(&buffer));
+    LONGS_EQUAL(cap, CircularBuffer_GetCapacity(&buffer));
 }
 
 /**
@@ -181,17 +181,18 @@ TEST(CircularBuffer, EmptyToFullToEmpty)
 }
 
 /**
- * CircularBuffer: PutWhenFullReturnsFalse
- * - Modify _Put() to return true on success, false on failure, by checking
- *   using CircularBuffer_IsFull()
+ * CircularBuffer: PutWhenFullReturnsFalseAndThrowsRuntimeError
+ * - Add a new error to the enum: BUFFER_IS_FULL
+ * - Modify _Put() to return NOERROR on success, BUFFER_IS_FULL on failure, by
+ * checking using CircularBuffer_IsFull()
  */
-TEST(CircularBuffer, PutWhenFullReturnsFalse)
+TEST(CircularBuffer, PutWhenFullReturnsFalseAndThrowsRuntimeError)
 {
     int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
     for (int i=0; i<bufCapacity-1; i++)
     {
-        CircularBuffer_Put(&buffer, 100+i);
+        LONGS_EQUAL(NOERROR, CircularBuffer_Put(&buffer, 100+i));
     }
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
-    CHECK_FALSE(CircularBuffer_Put(&buffer, 999));
+    LONGS_EQUAL(BUFFER_IS_FULL, CircularBuffer_Put(&buffer, 999));
 }
