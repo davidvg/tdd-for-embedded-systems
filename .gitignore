@@ -11,4 +11,3 @@ lib
 **/*.map
 
 **/circular-buffer-TDD
-04-CircularBuffer/CircularBufferTest.txt

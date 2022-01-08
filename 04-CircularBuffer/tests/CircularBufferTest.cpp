@@ -172,6 +172,20 @@ TEST(CircularBuffer, PutWhenFullReturnsFalseAndThrowsRuntimeError)
 }
 
 /**
+ * CircularBuffer: PutToFullDoesNothing
+ * The test should pass
+ */
+TEST(CircularBuffer, PutToFullDoesNothing)
+{
+    int bufCapacity = (int)CircularBuffer_GetCapacity(&buffer);
+    putManyInTheBuffer(10 * bufCapacity, 1000);
+    for (int i=0; i<bufCapacity; i++)
+    {
+        LONGS_EQUAL(1000 + i, CircularBuffer_Get(&buffer));
+    }
+}
+
+/**
  * CircularBuffer, WrapIndices
  * - Modify _Put() and _Get() to update indices using NextIndex()
  */
