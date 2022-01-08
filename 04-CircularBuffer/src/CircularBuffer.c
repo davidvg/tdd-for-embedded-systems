@@ -14,25 +14,10 @@ static void CircularBuffer_Initialize(CircularBuffer *cb, size_t cap, CBError er
     cb->buf = b;
 }
 
-static bool CircularBuffer_CapacityIsPowerOfTwo(size_t cap)
-{
-    return (cap & (cap - 1)) == 0;
-}
-
 CircularBuffer CircularBuffer_Create(size_t capacity)
 {
     CircularBuffer circBuff;
-
-    if (CircularBuffer_CapacityIsPowerOfTwo(capacity))
-    {
-        CircularBuffer_Initialize(&circBuff, capacity, NOERROR);
-    }
-    else
-    {
-        RUNTIME_ERROR("Capacity is not a power of two", (int)capacity);
-        CircularBuffer_Initialize(&circBuff, 0, CAPACITY_NOT_POWER_OF_TWO);
-    }
-
+    CircularBuffer_Initialize(&circBuff, capacity, NOERROR);
     return circBuff;
 }
 

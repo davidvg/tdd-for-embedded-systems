@@ -9,7 +9,7 @@ extern "C"
 TEST_GROUP(CircularBuffer)
 {
     CircularBuffer buffer;
-    size_t cap = 8;
+    size_t cap = 10;
 
     void setup()
     {
@@ -34,32 +34,6 @@ TEST_GROUP(CircularBuffer)
 TEST(CircularBuffer, EmptyAfterCreation)
 {
     CHECK_TRUE(CircularBuffer_IsEmpty(&buffer)); 
-}
-
-/**
- * CircularBuffer: CapacityIsPowerOfTwoReturnsErrorCode
- * - CircularBuffer.h: create enum with error codes
- * - In the struct add a CBError error field
- * - Create static function to check capacity = 2^n
- * - In Create() check if is power of two and initilize with error and
- *   capacity=0, to create a buffer with size 0
- * - Add a RUNTIME_ERROR when capacity is wrong
- */
-TEST(CircularBuffer, CapacityNotPowerOfTwoReturnsErrorCode)
-{
-    CircularBuffer b = CircularBuffer_Create(10);
-    LONGS_EQUAL(CAPACITY_NOT_POWER_OF_TWO, b.error);
-    STRCMP_EQUAL("Capacity is not a power of two", RuntimeErrorStub_GetLastError());
-    LONGS_EQUAL(10, RuntimeErrorStub_GetLastParameter());
-    CircularBuffer_Destroy(&b);
-}
-
-/**
- * CircularBuffer: CapacityIsPowerOfTwoReturnsNoError
- */
-TEST(CircularBuffer, CapacityIsPowerOfTwoReturnsNoError)
-{
-    LONGS_EQUAL(NOERROR, buffer.error);
 }
 
 /**
