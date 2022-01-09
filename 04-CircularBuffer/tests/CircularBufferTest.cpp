@@ -3,6 +3,7 @@
 extern "C"
 {
     #include "CircularBuffer.h"
+    #include "RuntimeErrorStub.h"
 }
 
 
@@ -161,7 +162,8 @@ TEST(CircularBuffer, EmptyToFullToEmpty)
  * CircularBuffer: PutWhenFullReturnsFalseAndThrowsRuntimeError
  * - Add a new error to the enum: BUFFER_IS_FULL
  * - Modify _Put() to return NOERROR on success, BUFFER_IS_FULL on failure, by
- * checking using CircularBuffer_IsFull()
+ *   checking using CircularBuffer_IsFull()
+ * - Return a RUNTIME_ERROR
  */
 TEST(CircularBuffer, PutWhenFullReturnsFalseAndThrowsRuntimeError)
 {
@@ -169,6 +171,8 @@ TEST(CircularBuffer, PutWhenFullReturnsFalseAndThrowsRuntimeError)
     putManyInTheBuffer(bufCapacity, 100);
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
     LONGS_EQUAL(BUFFER_IS_FULL, CircularBuffer_Put(&buffer, 999));
+    STRCMP_EQUAL("Can't write to buffer. The buffer is full.", RuntimeErrorStub_GetLastError());
+    LONGS_EQUAL(BUFFER_IS_FULL, RuntimeErrorStub_GetLastParameter());
 }
 
 /**

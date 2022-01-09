@@ -18,7 +18,6 @@
 typedef enum
 {
     NOERROR=0,
-    CAPACITY_NOT_POWER_OF_TWO,
     BUFFER_IS_FULL,
 } CBError;
 

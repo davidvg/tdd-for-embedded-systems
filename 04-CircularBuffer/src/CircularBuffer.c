@@ -59,6 +59,7 @@ CBError CircularBuffer_Put(CircularBuffer *cb, int val)
 {
     if (CircularBuffer_IsFull(cb))
     {
+        RUNTIME_ERROR("Can't write to buffer. The buffer is full.", BUFFER_IS_FULL);
         return BUFFER_IS_FULL;
     }
 
