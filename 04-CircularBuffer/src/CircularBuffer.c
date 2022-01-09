@@ -68,11 +68,15 @@ CBError CircularBuffer_Put(CircularBuffer *cb, int val)
     return NOERROR;
 }
 
-int CircularBuffer_Get(CircularBuffer *cb)
+CBError CircularBuffer_Get(CircularBuffer *cb, int *retval)
 {
-    int retval = cb->buf[cb->read];
+    if(CircularBuffer_IsEmpty(cb))
+    {
+        return BUFFER_IS_EMPTY;
+    }
+    *retval = cb->buf[cb->read];
     cb->read = CircularBuffer_NextIndex(cb->read, cb->capacity);
-    return retval;
+    return NOERROR;
 }
 
 size_t CircularBuffer_GetCapacity(CircularBuffer *cb)

@@ -11,6 +11,7 @@ TEST_GROUP(CircularBuffer)
 {
     CircularBuffer buffer;
     size_t cap = 10;
+    int retval;
 
     void setup()
     {
@@ -86,7 +87,7 @@ TEST(CircularBuffer, NotEmptyAfterPutThenEmptyAfterGet)
 {
     CircularBuffer_Put(&buffer, 1234);
     CHECK_FALSE(CircularBuffer_IsEmpty(&buffer));
-    CircularBuffer_Get(&buffer);
+    CircularBuffer_Get(&buffer, &retval);
     CHECK_TRUE(CircularBuffer_IsEmpty(&buffer));
 }
 
@@ -97,7 +98,8 @@ TEST(CircularBuffer, NotEmptyAfterPutThenEmptyAfterGet)
 TEST(CircularBuffer, GetReturnsPutValue)
 {
     CircularBuffer_Put(&buffer, 42);
-    LONGS_EQUAL(42, CircularBuffer_Get(&buffer));
+    LONGS_EQUAL(NOERROR, CircularBuffer_Get(&buffer, &retval));
+    LONGS_EQUAL(42, retval);
 }
 
 /**
@@ -107,9 +109,12 @@ TEST(CircularBuffer, GetReturnsPutValue)
 TEST(CircularBuffer, PutAndGetMultipleValues)
 {
     putManyInTheBuffer(3, 100);
-    LONGS_EQUAL(100, CircularBuffer_Get(&buffer));
-    LONGS_EQUAL(101, CircularBuffer_Get(&buffer));
-    LONGS_EQUAL(102, CircularBuffer_Get(&buffer));
+    LONGS_EQUAL(NOERROR, CircularBuffer_Get(&buffer, &retval));
+    LONGS_EQUAL(100, retval);
+    LONGS_EQUAL(NOERROR, CircularBuffer_Get(&buffer, &retval));
+    LONGS_EQUAL(101, retval);
+    LONGS_EQUAL(NOERROR, CircularBuffer_Get(&buffer, &retval));
+    LONGS_EQUAL(102, retval);
 }
 
 /**
@@ -152,7 +157,8 @@ TEST(CircularBuffer, EmptyToFullToEmpty)
 
     for (int i=0; i<bufCapacity; i++)
     {
-        LONGS_EQUAL(100+i, CircularBuffer_Get(&buffer));
+        LONGS_EQUAL(NOERROR, CircularBuffer_Get(&buffer, &retval));
+        LONGS_EQUAL(100+i, retval);
     }
     CHECK_FALSE(CircularBuffer_IsFull(&buffer));
     CHECK_TRUE(CircularBuffer_IsEmpty(&buffer));
@@ -185,7 +191,8 @@ TEST(CircularBuffer, PutToFullDoesNothing)
     putManyInTheBuffer(10 * bufCapacity, 1000);
     for (int i=0; i<bufCapacity; i++)
     {
-        LONGS_EQUAL(1000 + i, CircularBuffer_Get(&buffer));
+        LONGS_EQUAL(NOERROR, CircularBuffer_Get(&buffer, &retval));
+        LONGS_EQUAL(1000 + i, retval);
     }
 }
 
@@ -200,7 +207,8 @@ TEST(CircularBuffer, WrapIndicesWhenPutting)
     putManyInTheBuffer(bufCapacity, 100);
     CHECK_TRUE(CircularBuffer_IsFull(&buffer));
     // Get one item. Result: cap=10+1, w=10, r=1
-    LONGS_EQUAL(100, CircularBuffer_Get(&buffer));
+    CircularBuffer_Get(&buffer, &retval);
+    LONGS_EQUAL(100, retval);
     CHECK_FALSE(CircularBuffer_IsFull(&buffer));
     //  Put a new item and check wrapping for write. Result: cap=10+1, w=0, r=1
     CircularBuffer_Put(&buffer, 200);
@@ -220,7 +228,8 @@ TEST(CircularBuffer, WrapIndicesWhenGetting)
     // Leave only 1 item in the buffer
     for (int i=0; i<bufCapacity-1; i++)
     {
-        LONGS_EQUAL(100+i, CircularBuffer_Get(&buffer));
+        CircularBuffer_Get(&buffer, &retval);
+        LONGS_EQUAL(100+i, retval);
     }
     // Put capacity/2 items in the buffer
     putManyInTheBuffer(bufCapacity/2, 100+(int)cap);
@@ -228,8 +237,29 @@ TEST(CircularBuffer, WrapIndicesWhenGetting)
     int j = 0;
     while(!CircularBuffer_IsEmpty(&buffer))
     {
-        LONGS_EQUAL(100 + (int)cap - 1 + j, CircularBuffer_Get(&buffer));
+        CircularBuffer_Get(&buffer, &retval);
+        LONGS_EQUAL(100 + (int)cap - 1 + j, retval);
         j++;
     }
     CHECK_TRUE(CircularBuffer_IsEmpty(&buffer));
+}
+
+/**
+ * CircularBuffer: GetWhenBufferIsEmptyDoesNothing
+ * Calling CB_Get() when the buffer is empty causes the function to return the
+ * last value stored in the current read position and to advance the read index,
+ * causing the buffer to be in a state equivalent to being full, and being not
+ * possible to put new elements.
+ * - Add a BUFFER_IS_EMPTY element to the CBError enum
+ * - Modify CB_Get() to return a CBError and to take a new argument: a pointer 
+ *   to an int holding the returning value.
+ * - In CB_Get() check for CB_IsEmpty() and return BUFFER_IS_EMPTY
+ * - Modify CB_Get() in all the previous tests to use the new declaration
+ */
+TEST(CircularBuffer, GetWhenBufferIsEmptyDoesNothing)
+{
+    CHECK_TRUE(CircularBuffer_IsEmpty(&buffer));
+    size_t read_pre = buffer.read;
+    LONGS_EQUAL(BUFFER_IS_EMPTY, CircularBuffer_Get(&buffer, &retval));
+    LONGS_EQUAL(read_pre, buffer.read);
 }

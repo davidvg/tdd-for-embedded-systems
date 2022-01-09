@@ -2,10 +2,6 @@
  * CircularBuffer.h
  * 
  * Implementation of a Circular Buffer for integer values.
- * 
- * TODO A guide for implementing full buffer using bool:
- * https://embeddedartistry.com/blog/2017/05/17/creating-a-circular-buffer-in-c-and-c/
- *  
  */
 
 #ifndef D_CIRCULAR_BUFFER_H
@@ -19,6 +15,7 @@ typedef enum
 {
     NOERROR=0,
     BUFFER_IS_FULL,
+    BUFFER_IS_EMPTY,
 } CBError;
 
 typedef struct
@@ -35,7 +32,7 @@ void CircularBuffer_Destroy(CircularBuffer *cb);
 bool CircularBuffer_IsEmpty(CircularBuffer *cb);
 bool CircularBuffer_IsFull(CircularBuffer *cb);
 CBError CircularBuffer_Put(CircularBuffer *cb, int val);
-int CircularBuffer_Get(CircularBuffer *cb);
+CBError CircularBuffer_Get(CircularBuffer *cb, int *retval);
 size_t CircularBuffer_GetCapacity(CircularBuffer *cb);
 
 #endif
