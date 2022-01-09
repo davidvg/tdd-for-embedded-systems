@@ -72,6 +72,7 @@ CBError CircularBuffer_Get(CircularBuffer *cb, int *retval)
 {
     if(CircularBuffer_IsEmpty(cb))
     {
+        RUNTIME_ERROR("Can't read from buffer. The buffer is empty.", BUFFER_IS_EMPTY);
         return BUFFER_IS_EMPTY;
     }
     *retval = cb->buf[cb->read];

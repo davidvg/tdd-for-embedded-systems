@@ -48,7 +48,6 @@ TEST(CircularBuffer, EmptyAfterCreation)
 
 /**
  * CircularBuffer: NotFullAfterCreation
- * TODO Check if this test does anything
  * - CircularBuffer.c: define CircularBuffer_IsFull(*cb) and implement it to
  *   return false
  */
@@ -79,7 +78,6 @@ TEST(CircularBuffer, NotEmptyAfterPut)
 
 /**
  * CircularBuffer: NotEmptyAfterPutThenEmptyAfterGet
- * TODO The previous test does the same than this one
  * - Declare CircularBuffer_Get(*cb)
  * - In _Get() return cb.buf[cb.read] and increment cb.read
  */
@@ -253,13 +251,17 @@ TEST(CircularBuffer, WrapIndicesWhenGetting)
  * - Add a BUFFER_IS_EMPTY element to the CBError enum
  * - Modify CB_Get() to return a CBError and to take a new argument: a pointer 
  *   to an int holding the returning value.
- * - In CB_Get() check for CB_IsEmpty() and return BUFFER_IS_EMPTY
+ * - In CB_Get() check for CB_IsEmpty(), throw a RUNTIME_ERROR and return
+ *   BUFFER_IS_EMPTY
  * - Modify CB_Get() in all the previous tests to use the new declaration
  */
-TEST(CircularBuffer, GetWhenBufferIsEmptyDoesNothing)
+TEST(CircularBuffer, GetWhenBufferIsEmptyDoesNothingAndThrowsRuntimeError)
 {
     CHECK_TRUE(CircularBuffer_IsEmpty(&buffer));
     size_t read_pre = buffer.read;
     LONGS_EQUAL(BUFFER_IS_EMPTY, CircularBuffer_Get(&buffer, &retval));
     LONGS_EQUAL(read_pre, buffer.read);
+    STRCMP_EQUAL("Can't read from buffer. The buffer is empty.",
+                 RuntimeErrorStub_GetLastError());
+    LONGS_EQUAL(BUFFER_IS_EMPTY, RuntimeErrorStub_GetLastParameter());
 }
