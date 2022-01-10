@@ -91,12 +91,44 @@ TEST(CircularBufferPrint, PrintNotYetWrappedOrFull)
 TEST(CircularBufferPrint, PrintNotYetWrappedAndIsFull)
 {
     expectedOutput = "Circular buffer content:\n<31, 41, 59, 26, 53>\n";
+    
     CircularBuffer cb = CircularBuffer_Create(5);
     CircularBuffer_Put(&cb, 31);
     CircularBuffer_Put(&cb, 41);
     CircularBuffer_Put(&cb, 59);
     CircularBuffer_Put(&cb, 26);
     CircularBuffer_Put(&cb, 53);
+
+    CircularBuffer_Print(&cb);
+    STRCMP_EQUAL(expectedOutput, actualOutput);
+
+    CircularBuffer_Destroy(&cb);
+}
+
+/**
+ * CircularBufferPrint: PrintOldToNewWhenWrappedAndFull
+ * - In CB_PrintElements() define a local size_t print to replace cb.read and
+ *   track printed items and initialize to cb.read
+ * - Substitute the for loop for a while, looping while print != cb.write
+ * - Call FormatOutput with argument cb.buf[print]
+ * - Advance the print pointer using CB_NextIndex()
+ */
+TEST(CircularBufferPrint, PrintOldToNewWhenWrappedAndFull)
+{
+    int retval;
+    expectedOutput = "Circular buffer content:\n<201, 202, 203, 204, 999>\n";
+    
+    CircularBuffer cb = CircularBuffer_Create(5);
+    // Fill the buffer
+    CircularBuffer_Put(&cb, 200);
+    CircularBuffer_Put(&cb, 201);
+    CircularBuffer_Put(&cb, 202);
+    CircularBuffer_Put(&cb, 203);
+    CircularBuffer_Put(&cb, 204);
+    // Get the first item
+    CircularBuffer_Get(&cb, &retval);
+    // Put a new item
+    CircularBuffer_Put(&cb, 999);
 
     CircularBuffer_Print(&cb);
     STRCMP_EQUAL(expectedOutput, actualOutput);

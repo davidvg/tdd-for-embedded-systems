@@ -87,15 +87,17 @@ size_t CircularBuffer_GetCapacity(CircularBuffer *cb)
 
 static void CircularBuffer_PrintElements(CircularBuffer *cb)
 {
-    for (size_t pos=cb->read; pos<cb->write; pos++)
+    size_t print = cb->read;
+    while(print != cb->write)
     {
-        if (pos == cb->read)
+        if (print == cb->read)
         {
-            FormatOutput("%d", cb->buf[pos]);
+            FormatOutput("%d", cb->buf[print]);
         }
         else{
-            FormatOutput(", %d", cb->buf[pos]);
+            FormatOutput(", %d", cb->buf[print]);
         }
+        print = CircularBuffer_NextIndex(print, cb->capacity);
     }
 }
 
