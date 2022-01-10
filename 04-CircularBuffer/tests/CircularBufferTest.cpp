@@ -1,4 +1,5 @@
 #include "CppUTest/TestHarness.h"
+#include <stdio.h>
 
 extern "C"
 {
@@ -29,6 +30,15 @@ TEST_GROUP(CircularBuffer)
         {
             CircularBuffer_Put(&buffer, i+offset);
         }
+    }
+
+    void printBufferStatus(CircularBuffer *cb)
+    {
+        printf("  R=%03ld W=%03ld FULL=%d EMPTY=%d\n",
+               cb->read,
+               cb->write,
+               CircularBuffer_IsFull(cb),
+               CircularBuffer_IsEmpty(cb));
     }
 };
 
