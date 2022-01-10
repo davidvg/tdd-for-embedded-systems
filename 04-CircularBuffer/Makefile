@@ -20,7 +20,8 @@ CPP_PLATFORM = Gcc
 # CPPUTEST_MEMLEAK_DETECTOR_NEW_MACRO_FILE = -include include/ExamplesNewOverrides.h
 
 SRC_DIRS = \
-	src
+	src \
+	../03-FormatOutput/src
 
 TEST_SRC_DIRS = \
 	tests
@@ -28,9 +29,10 @@ TEST_SRC_DIRS = \
 INCLUDE_DIRS = \
   include \
   ../include/util \
+  ../03-FormatOutput/include \
   $(SRC_DIRS) \
   $(CPPUTEST_HOME)/include
 
-MOCKS_SRC_DIRS = mocks ../mocks
+MOCKS_SRC_DIRS = mocks ../mocks ../03-FormatOutput/mocks
 
 include $(CPPUTEST_HOME)/build/MakefileWorker.mk

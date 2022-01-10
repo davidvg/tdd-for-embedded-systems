@@ -30,10 +30,7 @@ int FormatOutputSpy(const char * format, ...)
     va_list args;
     // Specify the last fixed argument in the argument list
     va_start(args, format);
-    /**
-     * int vsnprintf (char * buf, size_t n, const char * format, va_list arg )
-     * Write formatted data from variable argument list to sized buffer.
-     */
+    // Write formatted data from variable argument list to sized buffer.
     int written_size = vsnprintf(buffer + buffer_offset,
                                  buffer_size - buffer_used,
                                  format,

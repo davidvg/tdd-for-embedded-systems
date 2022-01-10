@@ -84,3 +84,29 @@ size_t CircularBuffer_GetCapacity(CircularBuffer *cb)
 {
     return cb->capacity - 1;
 }
+
+static void CircularBuffer_PrintElements(CircularBuffer *cb)
+{
+    for (size_t pos=cb->read; pos<cb->write; pos++)
+    {
+        if (pos == cb->read)
+        {
+            FormatOutput("%d", cb->buf[pos]);
+        }
+        else{
+            FormatOutput(", %d", cb->buf[pos]);
+        }
+    }
+}
+
+void CircularBuffer_Print(CircularBuffer *cb)
+{
+    char * outputHead = "Circular buffer content:\n<";
+    char * outputTail = ">\n";
+
+    FormatOutput("%s", outputHead);
+
+    CircularBuffer_PrintElements(cb);
+
+    FormatOutput("%s", outputTail);
+}

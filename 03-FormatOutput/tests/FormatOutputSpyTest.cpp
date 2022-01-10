@@ -28,8 +28,8 @@ TEST_GROUP(FormatOutputSpy)
  * - FormatOutputSpy.h: declare FormatOutputSpy_GetOutput()
  * - FormatOutputSpy.c: Implement empty FormatOutputSpy() and _GetOutput()
  * - FormatOutputSpy.c: define static buffer, static buffer_size
- * - FormatOutputSpy.c: in _Create() define buffer_size = size+1 and make a new
- *   buffer with buffer_size using calloc().
+ * - FormatOutputSpy.c: in _Create() define buffer_size = size+1 and allocate
+ *   buffer with buffer_size and type char using calloc().
  * - FormatOutputSpy.c: in _Destroy() free buffer and make it =0;
  * - FormatOutputSpy.c: in FormatOutputSpy():
  *      - create va_list args
