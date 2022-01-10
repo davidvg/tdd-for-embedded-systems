@@ -3,6 +3,8 @@
 **/unity-assertions-cheatsheet.pdf
 **/*.o
 **/*.d
+**/*.gcda
+**/*.gcno
 lib
 
 # Compiled targets

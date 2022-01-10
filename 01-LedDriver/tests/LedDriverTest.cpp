@@ -19,6 +19,7 @@ TEST_GROUP(LedDriver)
 
     void teardown()
     {
+        LedDriver_Destroy();
     }
 };
 
