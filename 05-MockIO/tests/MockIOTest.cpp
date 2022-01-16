@@ -175,3 +175,37 @@ TEST(MockIO, TooManyReadExpectations)
   testFailureWith(TooManyReadExpectations);
   fixture->assertPrintContains("MockIO_Expect_Read: Too many expectations");
 }
+
+/**
+ * MockIO: ExpectReadWhenNotInitialized
+ * - Destroy(): check that expectations != 0 and then free it, and make it = 0
+ * - In Expect_ReadThenReturn() check that expectations == 0 and fail with msg
+ */
+static void ExpectReadWhenNotInitialized(void)
+{
+    MockIO_Destroy();
+    MockIO_Expect_ReadThenReturn(0, 0);
+}
+
+TEST(MockIO, ExpectReadWhenNotInitialized)
+{
+    testFailureWith(ExpectReadWhenNotInitialized);
+    fixture->assertPrintContains("MockIO not initialized");
+}
+
+/**
+ * MockIO: ExpectWriteWhenNotInitialized
+ * - Modify Expect_Writee() like in the previous test
+ * - Refactor to failWhenNotInitialized()
+ */
+static void ExpectWriteWhenNotInitialized(void)
+{
+    MockIO_Destroy();
+    MockIO_Expect_Write(0, 0);
+}
+
+TEST(MockIO, ExpectWriteWhenNotInitialized)
+{
+    testFailureWith(ExpectWriteWhenNotInitialized);
+    fixture->assertPrintContains("MockIO not initialized");
+}

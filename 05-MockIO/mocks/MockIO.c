@@ -43,6 +43,9 @@ static char * report_too_many_write_expectations =
 static char * report_too_many_read_expectations = 
     "MockIO_Expect_Read: Too many expectations";
 
+static char * report_not_initialized = 
+    "MockIO not initialized";
+
 /*******************************************************************************
  * Failing methods
  ******************************************************************************/
@@ -76,6 +79,12 @@ static void failWhenTooManyExpectations(char *msg)
 {
     if (setExpectationCount == maxExpectationCount)
         FAIL_TEXT_C(msg);
+}
+
+static void failWhenNotInitialized(void)
+{
+    if (!expectations)
+        FAIL_TEXT_C(report_not_initialized);
 }
 
 /*******************************************************************************
@@ -131,7 +140,10 @@ void MockIO_Create(int maxExpectations)
 
 void MockIO_Destroy(void)
 {
-    free(expectations);
+    if (expectations)
+        free(expectations);
+    expectations = 0;
+
     maxExpectationCount = 0;
     setExpectationCount = 0;
     getExpectationCount = 0;
@@ -139,6 +151,7 @@ void MockIO_Destroy(void)
 
 void MockIO_Expect_Write(ioAddress addr, ioData data)
 {
+    failWhenNotInitialized();
     failWhenTooManyExpectations(report_too_many_write_expectations);
 
     recordExpectation(FLASH_WRITE, addr, data);
@@ -147,6 +160,7 @@ void MockIO_Expect_Write(ioAddress addr, ioData data)
 
 void MockIO_Expect_ReadThenReturn(ioAddress addr, ioData data)
 {
+    failWhenNotInitialized();
     failWhenTooManyExpectations(report_too_many_read_expectations);
 
     recordExpectation(FLASH_READ, addr, data);
