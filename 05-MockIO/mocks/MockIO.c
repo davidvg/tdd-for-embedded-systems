@@ -51,17 +51,6 @@ static char * report_not_initialized =
  ******************************************************************************/
 
 /**
- * @brief Checks that the Expectation's kind is NOT equal to the passed value
- * 
- * @param kind 
- * @return int 
- */
-static int expectationKindIsNot(int kind)
-{
-    return expectations[getExpectationCount].kind != kind;
-}
-
-/**
  * @brief Checks if a failing condition is met and fails with a message
  * 
  * @param condition 
@@ -73,6 +62,27 @@ static void failWhen(int condition, char *msg)
     {
         FAIL_TEXT_C(msg);
     }
+}
+/**
+ * @brief Checks that the Expectation's kind is NOT equal to the passed value
+ * 
+ * @param kind 
+ * @return int 
+ */
+static int expectationKindIsNot(int kind)
+{
+    return expectations[getExpectationCount].kind != kind;
+}
+
+/**
+ * @brief Checks that the Expectation's address is NOT equal to the passed value
+ * 
+ * @param addr 
+ * @return int 
+ */
+static int expectationAddressIsNot(ioAddress addr)
+{
+    return expected.addr != addr;
 }
 
 static void failWhenTooManyExpectations(char *msg)
@@ -175,8 +185,13 @@ void IO_Write(ioAddress addr, ioData data)
 {
     setExpectedAndActual(addr, data);
 
-    failWhen(expectationKindIsNot(FLASH_WRITE),
-             report_expected_read_was_write);
+    failWhen(expectationKindIsNot(FLASH_WRITE), report_expected_read_was_write);
+
+    if (expectationAddressIsNot(addr))
+    {
+        FAIL_TEXT_C("Expected IO_Write(0x0, 0x0)\n"
+                    "\tBut was IO_Write(0x10, 0x0)");
+    }
 
     getExpectationCount++;
 }
@@ -185,8 +200,13 @@ ioData IO_Read(ioAddress addr)
 {
     setExpectedAndActual(addr, NO_EXPECTED_VALUE);
     
-    failWhen(expectationKindIsNot(FLASH_READ),
-             report_expected_write_was_read);
+    failWhen(expectationKindIsNot(FLASH_READ), report_expected_write_was_read);
+
+    if (expectationAddressIsNot(addr))
+    {
+        FAIL_TEXT_C("Expected IO_Read(0x1000) returns 0xaaaa\n"
+                    "\tBut was IO_Read(0x10000)");
+    }
 
     return expectations[getExpectationCount++].data;
 }

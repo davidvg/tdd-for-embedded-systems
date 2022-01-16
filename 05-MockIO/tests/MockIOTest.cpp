@@ -209,3 +209,38 @@ TEST(MockIO, ExpectWriteWhenNotInitialized)
     testFailureWith(ExpectWriteWhenNotInitialized);
     fixture->assertPrintContains("MockIO not initialized");
 }
+
+/**
+ * MockIO: MismatchedWriteAddress
+ * - IO_Write(): check expected.addr != actual.addr and fail with msg
+ */
+static void MismatchedWriteAddress(void)
+{
+    MockIO_Expect_Write(0, 0);
+    IO_Write(0x10, 0);
+}
+
+TEST(MockIO, MismatchedWriteAddress)
+{
+    testFailureWith(MismatchedWriteAddress);
+    fixture->assertPrintContains("Expected IO_Write(0x0, 0x0)");
+    fixture->assertPrintContains("But was IO_Write(0x10, 0x0)");
+}
+
+/**
+ * MockIO: MismatchedReadAddress
+ * - IO_Read(): modify it like in the previous test
+ * - Refactor to expectationAddressIsNot(addr)
+ */
+static void MismatchedReadAddress()
+{
+    MockIO_Expect_ReadThenReturn(0x1000,0xaaaa);
+    IO_Read(0x10000);
+}
+
+TEST(MockIO, MismatchedReadAddress)
+{
+  testFailureWith(MismatchedReadAddress);
+  fixture->assertPrintContains("Expected IO_Read(0x1000) returns 0xaaaa");
+  fixture->assertPrintContains("But was IO_Read(0x10000)");
+}
