@@ -37,6 +37,12 @@ static char * report_expected_write_was_read =
     "Expected IO_Write(0x0, 0x1)\n"
     "\t        But was IO_Read(0x0)";
 
+static char * report_too_many_write_expectations = 
+    "MockIO_Expect_Write: Too many expectations";
+
+static char * report_too_many_read_expectations = 
+    "MockIO_Expect_Read: Too many expectations";
+
 /*******************************************************************************
  * Failing methods
  ******************************************************************************/
@@ -58,12 +64,18 @@ static int expectationKindIsNot(int kind)
  * @param condition 
  * @param msg 
  */
-static void failWhen(int condition, char * msg)
+static void failWhen(int condition, char *msg)
 {
     if (condition)
     {
         FAIL_TEXT_C(msg);
     }
+}
+
+static void failWhenTooManyExpectations(char *msg)
+{
+    if (setExpectationCount == maxExpectationCount)
+        FAIL_TEXT_C(msg);
 }
 
 /*******************************************************************************
@@ -78,8 +90,7 @@ static void printExpectation(int number)
 }
 
 /**
- * @brief Adds a new Expectation to the expectations array and increments
- * @brief the count in setExpectationCount
+ * @brief Adds a new Expectation to the expectations array
  * 
  * @param addr 
  * @param data 
@@ -90,7 +101,6 @@ static void recordExpectation(Operation kind, ioAddress addr, ioData data)
     expectations[setExpectationCount].addr = addr;
     expectations[setExpectationCount].data = data;
     // printExpectation(setExpectationCount);
-    setExpectationCount++;
 }
 
 /**
@@ -129,12 +139,18 @@ void MockIO_Destroy(void)
 
 void MockIO_Expect_Write(ioAddress addr, ioData data)
 {
+    failWhenTooManyExpectations(report_too_many_write_expectations);
+
     recordExpectation(FLASH_WRITE, addr, data);
+    setExpectationCount++;
 }
 
 void MockIO_Expect_ReadThenReturn(ioAddress addr, ioData data)
 {
+    failWhenTooManyExpectations(report_too_many_read_expectations);
+
     recordExpectation(FLASH_READ, addr, data);
+    setExpectationCount++;
 }
 
 /*******************************************************************************

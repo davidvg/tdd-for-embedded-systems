@@ -137,3 +137,41 @@ TEST(MockIO, ExpectedWriteWasReadFails)
     fixture->assertPrintContains("Expected IO_Write(0x0, 0x1)");
     fixture->assertPrintContains("But was IO_Read(0x0)");
 }
+
+/**
+ * MockIO: TooManyWriteExpectations
+ * - Expect_Write(): check that setExpectationCount == maxExpectationCount and
+ *   fail with text
+ */
+static void TooManyWriteExpectations(void)
+{
+    MockIO_Expect_Write(0, 1);
+    MockIO_Expect_Write(0, 1);
+    MockIO_Expect_Write(0, 1);
+}
+
+TEST(MockIO, TooManyWriteExpectations)
+{
+    testFailureWith(TooManyWriteExpectations);
+    fixture->assertPrintContains("MockIO_Expect_Write: Too many expectations");
+}
+
+/**
+ * MockIO: TooManyReadExpectations
+ * - Expect_Read(): modify the method like in the previous test
+ * - Refactor failing messages
+ * - Refactor to failWhenTooManyExpectations(msg)
+ */
+
+static void TooManyReadExpectations()
+{
+    MockIO_Expect_ReadThenReturn(0, 0);
+    MockIO_Expect_ReadThenReturn(0, 0);
+    MockIO_Expect_ReadThenReturn(0, 0);
+}
+
+TEST(MockIO, TooManyReadExpectations)
+{
+  testFailureWith(TooManyReadExpectations);
+  fixture->assertPrintContains("MockIO_Expect_Read: Too many expectations");
+}
