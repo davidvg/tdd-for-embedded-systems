@@ -234,7 +234,7 @@ TEST(MockIO, MismatchedWriteAddress)
  */
 static void MismatchedReadAddress()
 {
-    MockIO_Expect_ReadThenReturn(0x1000,0xaaaa);
+    MockIO_Expect_ReadThenReturn(0x1000, 0xaaaa);
     IO_Read(0x10000);
 }
 

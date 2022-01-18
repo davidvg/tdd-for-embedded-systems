@@ -29,6 +29,7 @@ static Expectation actual;
  * Messages
  ******************************************************************************/
 
+// Failed expectations
 static char * report_expected_read_was_write = 
     "Expected IO_Read(0x0) would return 0x1\n"
     "\t        But was IO_Write(0x0, 0x0)";
@@ -36,6 +37,16 @@ static char * report_expected_read_was_write =
 static char * report_expected_write_was_read = 
     "Expected IO_Write(0x0, 0x1)\n"
     "\t        But was IO_Read(0x0)";
+
+static char * report_write_wrong_address = 
+    "Expected IO_Write(0x%x, 0x%x)\n"
+    "\t        But was IO_Write(0x%x, 0x%x)";
+
+static char * report_read_wrong_address = 
+    "Expected IO_Read(0x%x) returns 0x%x\n"
+    "\t        But was IO_Read(0x%x)";
+
+// Other messages
 
 static char * report_too_many_write_expectations = 
     "MockIO_Expect_Write: Too many expectations";
@@ -51,6 +62,24 @@ static char * report_not_initialized =
  ******************************************************************************/
 
 /**
+ * @brief Format a string for reporting an unmet expectation and fail with text 
+ * 
+ * @param msg 
+ */
+static void failExpectation(char * expectationFailMsg)
+{
+    char msg[100];
+    int size = sizeof(msg) - 1;
+    int offset;
+
+    offset = snprintf(msg, size, expectationFailMsg,
+                      expected.addr, expected.data,
+                      actual.addr, actual.data);
+
+    FAIL_TEXT_C(msg);
+}
+
+/**
  * @brief Checks if a failing condition is met and fails with a message
  * 
  * @param condition 
@@ -60,9 +89,10 @@ static void failWhen(int condition, char *msg)
 {
     if (condition)
     {
-        FAIL_TEXT_C(msg);
+        FAIL_TEXT_C(msg);   
     }
 }
+
 /**
  * @brief Checks that the Expectation's kind is NOT equal to the passed value
  * 
@@ -189,8 +219,7 @@ void IO_Write(ioAddress addr, ioData data)
 
     if (expectationAddressIsNot(addr))
     {
-        FAIL_TEXT_C("Expected IO_Write(0x0, 0x0)\n"
-                    "\tBut was IO_Write(0x10, 0x0)");
+        failExpectation(report_write_wrong_address);
     }
 
     getExpectationCount++;
@@ -204,8 +233,7 @@ ioData IO_Read(ioAddress addr)
 
     if (expectationAddressIsNot(addr))
     {
-        FAIL_TEXT_C("Expected IO_Read(0x1000) returns 0xaaaa\n"
-                    "\tBut was IO_Read(0x10000)");
+        failExpectation(report_read_wrong_address);
     }
 
     return expectations[getExpectationCount++].data;
