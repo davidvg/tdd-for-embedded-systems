@@ -100,20 +100,20 @@ static void failWhen(int condition, char *msg)
  * @param kind 
  * @return int 
  */
-static int expectationKindIsNot(int kind)
+// static int expectationKindIsNot(int kind)
+static int expectationKindDoesNotMatch(void)
 {
-    return expectations[getExpectationCount].kind != kind;
+    return expectations[getExpectationCount].kind != actual.kind;
 }
 
 /**
- * @brief Checks that the Expectation's address is NOT equal to the passed value
+ * @brief Checks that the Expectation's address is NOT equal to the actual value
  * 
- * @param addr 
  * @return int 
  */
-static int expectationAddressIsNot(ioAddress addr)
+static int expectationAddressDoesNotMatch(void)
 {
-    return expected.addr != addr;
+    return expected.addr != actual.addr;
 }
 
 static int expectationDataDoesNotMatch(void)
@@ -147,6 +147,7 @@ static void printExpectation(int number)
 /**
  * @brief Adds a new Expectation to the expectations array
  * 
+ * @param kind 
  * @param addr 
  * @param data 
  */
@@ -162,13 +163,16 @@ static void recordExpectation(Operation kind, ioAddress addr, ioData data)
  * @brief Set the expected Expectation to the next recorded Expectation and
  * @brief the actual Expectation to the intercepted Expectation
  * 
+ * @param kind 
  * @param addr 
  * @param data 
  */
-static void setExpectedAndActual(ioAddress addr, ioData data)
+static void setExpectedAndActual(int kind, ioAddress addr, ioData data)
 {
+    expected.kind = expectations[getExpectationCount].kind;
     expected.addr = expectations[getExpectationCount].addr;
     expected.data = expectations[getExpectationCount].data;
+    actual.kind = kind;
     actual.addr = addr;
     actual.data = data;
 }
@@ -219,10 +223,10 @@ void MockIO_Expect_ReadThenReturn(ioAddress addr, ioData data)
 
 void IO_Write(ioAddress addr, ioData data)
 {
-    setExpectedAndActual(addr, data);
+    setExpectedAndActual(FLASH_WRITE, addr, data);
 
-    failWhen(expectationKindIsNot(FLASH_WRITE), report_expected_read_was_write);
-    failWhen(expectationAddressIsNot(addr), report_write_does_not_match);
+    failWhen(expectationKindDoesNotMatch(), report_expected_read_was_write);
+    failWhen(expectationAddressDoesNotMatch(), report_write_does_not_match);
     failWhen(expectationDataDoesNotMatch(), report_write_does_not_match);
 
     getExpectationCount++;
@@ -230,10 +234,10 @@ void IO_Write(ioAddress addr, ioData data)
 
 ioData IO_Read(ioAddress addr)
 {
-    setExpectedAndActual(addr, NO_EXPECTED_VALUE);
+    setExpectedAndActual(FLASH_READ, addr, NO_EXPECTED_VALUE);
     
-    failWhen(expectationKindIsNot(FLASH_READ), report_expected_write_was_read);
-    failWhen(expectationAddressIsNot(addr), report_read_wrong_address);
+    failWhen(expectationKindDoesNotMatch(), report_expected_write_was_read);
+    failWhen(expectationAddressDoesNotMatch(), report_read_wrong_address);
 
     return expectations[getExpectationCount++].data;
 }
