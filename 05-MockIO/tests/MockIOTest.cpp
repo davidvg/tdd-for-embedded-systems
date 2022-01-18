@@ -244,3 +244,23 @@ TEST(MockIO, MismatchedReadAddress)
   fixture->assertPrintContains("Expected IO_Read(0x1000) returns 0xaaaa");
   fixture->assertPrintContains("But was IO_Read(0x10000)");
 }
+
+/**
+ * MockIO, MismatchedWriteData
+ * - Check that expected.data != actual.data and failExpectation() with the
+ *   same message than the address failing
+ * - Refactor the check into expectationDataDoesNotMatch()+
+ * - Modify the code to use failWhen()
+ */
+static void MismatchedWriteData(void)
+{
+    MockIO_Expect_Write(0, 0);
+    IO_Write(0, 0xDEAD);
+}
+
+TEST(MockIO, MismatchedWriteData)
+{
+    testFailureWith(MismatchedWriteData);
+    fixture->assertPrintContains("Expected IO_Write(0x0, 0x0)");
+    fixture->assertPrintContains("But was IO_Write(0x0, 0xdead)");
+}

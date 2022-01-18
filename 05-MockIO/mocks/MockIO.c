@@ -38,7 +38,8 @@ static char * report_expected_write_was_read =
     "Expected IO_Write(0x%x, 0x%x)\n"
     "\t        But was IO_Read(0x%x)";
 
-static char * report_write_wrong_address = 
+// Mismatched Write address or data
+static char * report_write_does_not_match = 
     "Expected IO_Write(0x%x, 0x%x)\n"
     "\t        But was IO_Write(0x%x, 0x%x)";
 
@@ -113,6 +114,11 @@ static int expectationKindIsNot(int kind)
 static int expectationAddressIsNot(ioAddress addr)
 {
     return expected.addr != addr;
+}
+
+static int expectationDataDoesNotMatch(void)
+{
+    return expected.data != actual.data;
 }
 
 static void failWhenTooManyExpectations(char *msg)
@@ -216,7 +222,8 @@ void IO_Write(ioAddress addr, ioData data)
     setExpectedAndActual(addr, data);
 
     failWhen(expectationKindIsNot(FLASH_WRITE), report_expected_read_was_write);
-    failWhen(expectationAddressIsNot(addr), report_write_wrong_address);
+    failWhen(expectationAddressIsNot(addr), report_write_does_not_match);
+    failWhen(expectationDataDoesNotMatch(), report_write_does_not_match);
 
     getExpectationCount++;
 }
