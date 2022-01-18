@@ -31,12 +31,12 @@ static Expectation actual;
 
 // Failed expectations
 static char * report_expected_read_was_write = 
-    "Expected IO_Read(0x0) would return 0x1\n"
-    "\t        But was IO_Write(0x0, 0x0)";
+    "Expected IO_Read(0x%x) would return 0x%x\n"
+    "\t        But was IO_Write(0x%x, 0x%x)";
 
 static char * report_expected_write_was_read = 
-    "Expected IO_Write(0x0, 0x1)\n"
-    "\t        But was IO_Read(0x0)";
+    "Expected IO_Write(0x%x, 0x%x)\n"
+    "\t        But was IO_Read(0x%x)";
 
 static char * report_write_wrong_address = 
     "Expected IO_Write(0x%x, 0x%x)\n"
@@ -89,7 +89,7 @@ static void failWhen(int condition, char *msg)
 {
     if (condition)
     {
-        FAIL_TEXT_C(msg);   
+        failExpectation(msg);
     }
 }
 
@@ -216,11 +216,7 @@ void IO_Write(ioAddress addr, ioData data)
     setExpectedAndActual(addr, data);
 
     failWhen(expectationKindIsNot(FLASH_WRITE), report_expected_read_was_write);
-
-    if (expectationAddressIsNot(addr))
-    {
-        failExpectation(report_write_wrong_address);
-    }
+    failWhen(expectationAddressIsNot(addr), report_write_wrong_address);
 
     getExpectationCount++;
 }
@@ -230,11 +226,7 @@ ioData IO_Read(ioAddress addr)
     setExpectedAndActual(addr, NO_EXPECTED_VALUE);
     
     failWhen(expectationKindIsNot(FLASH_READ), report_expected_write_was_read);
-
-    if (expectationAddressIsNot(addr))
-    {
-        failExpectation(report_read_wrong_address);
-    }
+    failWhen(expectationAddressIsNot(addr), report_read_wrong_address);
 
     return expectations[getExpectationCount++].data;
 }
