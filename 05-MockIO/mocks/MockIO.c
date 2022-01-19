@@ -75,10 +75,10 @@ static char * report_not_all_expectations_used =
 /*******************************************************************************
  * Checks
  ******************************************************************************/
+
 /**
  * @brief Checks that the Expectation's kind is NOT equal to the passed value
  * 
- * @param kind 
  * @return int 
  */
 static int expectationKindDoesNotMatch(void)
@@ -96,11 +96,21 @@ static int expectationAddressDoesNotMatch(void)
     return expected.addr != actual.addr;
 }
 
+/**
+ * @brief Checks that the expected data is correct
+ * 
+ * @return int 
+ */
 static int expectationDataDoesNotMatch(void)
 {
     return expected.data != actual.data;
 }
 
+/**
+ * @brief Checks that there are no unused expectations
+ * 
+ * @return int 
+ */
 static int noUnusedExpectations(void)
 {
     return getExpectationCount == setExpectationCount;
@@ -110,6 +120,10 @@ static int noUnusedExpectations(void)
  * Failing methods
  ******************************************************************************/
 
+/**
+ * @brief Checks that the expectations array has been initialized
+ * 
+ */
 static void failWhenNotInitialized(void)
 {
     if (!expectations)
@@ -185,17 +199,21 @@ static void failWhenNoUnusedExpectations(char * expectationFailMsg)
     }
 }
 
+/**
+ * @brief Checks that there are no unused expectations and fails with message
+ * 
+ */
 static void failWhenNotAllExpectationsUsed(void)
 {
-    char msg[100];
-    int size = sizeof(msg) - 1;
-    int offset;
-
-    offset = snprintf(msg, size, report_not_all_expectations_used,
-                      maxExpectationCount, getExpectationCount);
-
     if (getExpectationCount != maxExpectationCount)
     {
+        char msg[100];
+        int size = sizeof(msg) - 1;
+        int offset;
+
+        offset = snprintf(msg, size, report_not_all_expectations_used,
+                        maxExpectationCount, getExpectationCount);
+
         FAIL_TEXT_C(msg);
     }
 }
@@ -204,6 +222,11 @@ static void failWhenNotAllExpectationsUsed(void)
  * Helping methods
  ******************************************************************************/
 
+/**
+ * @brief Prints a formatted string with the contents of a numbered Expectation
+ * 
+ * @param number 
+ */
 static void printExpectation(int number)
 {
     Expectation exp = expectations[number];
@@ -247,6 +270,12 @@ static void setExpectedAndActual(int kind, ioAddress addr, ioData data)
 /*******************************************************************************
  * MockIO methods
  ******************************************************************************/
+
+/**
+ * @brief Initializes the Mock and its components
+ * 
+ * @param maxExpectations 
+ */
 void MockIO_Create(int maxExpectations)
 {
     maxExpectationCount = maxExpectations;
@@ -255,6 +284,10 @@ void MockIO_Create(int maxExpectations)
     getExpectationCount = 0;
 }
 
+/**
+ * @brief Destroys the Mock and resets its components
+ * 
+ */
 void MockIO_Destroy(void)
 {
     if (expectations)
@@ -266,6 +299,12 @@ void MockIO_Destroy(void)
     getExpectationCount = 0;
 }
 
+/**
+ * @brief Add a new IO_Write() Expectation
+ * 
+ * @param addr 
+ * @param data 
+ */
 void MockIO_Expect_Write(ioAddress addr, ioData data)
 {
     failWhenNotInitialized();
@@ -275,6 +314,12 @@ void MockIO_Expect_Write(ioAddress addr, ioData data)
     setExpectationCount++;
 }
 
+/**
+ * @brief Add a new IO_Read() Expectation
+ * 
+ * @param addr 
+ * @param data 
+ */
 void MockIO_Expect_ReadThenReturn(ioAddress addr, ioData data)
 {
     failWhenNotInitialized();
