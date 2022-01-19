@@ -12,8 +12,3 @@ lib
 *_tests
 **/*.map
 
-05-MockIO/MockIO_c.txt
-05-MockIO/MockIOTest.txt
-05-MockIO/mocks_book/MockIO_book.h
-05-MockIO/mocks_book/MockIO_book.c
-05-MockIO/src/IO.c

@@ -4,7 +4,7 @@ ifndef SILENCE
 endif
 
 #--- Inputs ----#
-COMPONENT_NAME = MockIO
+COMPONENT_NAME = IO
 MEMORY_MAP_FILE = $(COMPONENT_NAME).map
 
 CPPUTEST_USE_EXTENSIONS = Y
@@ -17,7 +17,7 @@ CPP_PLATFORM = Gcc
 #  - include <list>
 #  - include MemoryLeakDetectorNewMacros.h, in $(CPPUTEST_HOME)/include/CppUTest
 #  A new header file doing this two things should be created in an included path
-# CPPUTEST_MEMLEAK_DETECTOR_NEW_MACRO_FILE = -include include/ExamplesNewOverrides.h
+# CPPUTEST_MEMLEAK_DETECTOR_NEW_MACRO_FILE = -include ../include/util/ExamplesNewOverrides.h
 
 SRC_DIRS = \
 	src 
