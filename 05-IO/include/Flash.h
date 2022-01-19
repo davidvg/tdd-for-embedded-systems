@@ -7,6 +7,9 @@
 typedef enum
 {
     FLASH_SUCCESS=0,
+    FLASH_VPP_ERROR,
+    FLASH_PROGRAM_ERROR,
+    FLASH_PROTECTED_BLOCK_ERROR,
 } Flash_Status;
 
 

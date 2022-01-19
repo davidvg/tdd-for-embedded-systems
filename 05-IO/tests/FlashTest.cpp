@@ -78,3 +78,55 @@ TEST(Flash, WriteSucceeds_NotInmediatelyReady)
     result = Flash_Write(address, data);
     LONGS_EQUAL(0, result);
 }
+
+/**
+ * Flash: WriteFalls_VppError
+ * - Define VppErrorBit=1<<3 in the enum, in the device header file.
+ * - Define the command RESET=0xFF in the enum
+ * - Define FLASH_VPP_ERROR in the Flash_Status enum
+ * - After reading STATUS_REGISTER, check if (status & VppErrorBit == True) and
+ *   then return the error
+ */
+TEST(Flash, WriteFalls_VppError)
+{
+    MockIO_Expect_Write(COMMAND_REGISTER, PROGRAM_COMMAND);
+    MockIO_Expect_Write(address, data);
+    MockIO_Expect_ReadThenReturn(STATUS_REGISTER, ReadyBit | VppErrorBit);
+    MockIO_Expect_Write(COMMAND_REGISTER, RESET_COMMAND);
+
+    result = Flash_Write(address, data);
+
+    LONGS_EQUAL(FLASH_VPP_ERROR, result);
+}
+
+/**
+ * Flash: WriteFalls_ProgramError
+ * - Fix the code as in the previous test
+ */
+TEST(Flash, WriteFalls_ProgramError)
+{
+    MockIO_Expect_Write(COMMAND_REGISTER, PROGRAM_COMMAND);
+    MockIO_Expect_Write(address, data);
+    MockIO_Expect_ReadThenReturn(STATUS_REGISTER, ReadyBit | ProgramErrorBit);
+    MockIO_Expect_Write(COMMAND_REGISTER, RESET_COMMAND);
+
+    result = Flash_Write(address, data);
+
+    LONGS_EQUAL(FLASH_PROGRAM_ERROR, result);
+}
+
+/**
+ * Flash: WriteFalls_ProtectedBlockError
+ * - Fix the code as in the previous test
+ */
+TEST(Flash, WriteFalls_ProtectedBlockError)
+{
+    MockIO_Expect_Write(COMMAND_REGISTER, PROGRAM_COMMAND);
+    MockIO_Expect_Write(address, data);
+    MockIO_Expect_ReadThenReturn(STATUS_REGISTER, ReadyBit | ProtectedBlockBit);
+    MockIO_Expect_Write(COMMAND_REGISTER, RESET_COMMAND);
+
+    result = Flash_Write(address, data);
+
+    LONGS_EQUAL(FLASH_PROTECTED_BLOCK_ERROR, result);
+}
