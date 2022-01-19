@@ -69,6 +69,9 @@ static char * report_write_but_no_unused_expectations =
 static char * report_expectation_number = 
     "R/W %d: ";
 
+static char * report_not_all_expectations_used =
+    "Expected %d reads/writes but got %d";
+
 /*******************************************************************************
  * Checks
  ******************************************************************************/
@@ -182,6 +185,21 @@ static void failWhenNoUnusedExpectations(char * expectationFailMsg)
     }
 }
 
+static void failWhenNotAllExpectationsUsed(void)
+{
+    char msg[100];
+    int size = sizeof(msg) - 1;
+    int offset;
+
+    offset = snprintf(msg, size, report_not_all_expectations_used,
+                      maxExpectationCount, getExpectationCount);
+
+    if (getExpectationCount != maxExpectationCount)
+    {
+        FAIL_TEXT_C(msg);
+    }
+}
+
 /*******************************************************************************
  * Helping methods
  ******************************************************************************/
@@ -264,6 +282,15 @@ void MockIO_Expect_ReadThenReturn(ioAddress addr, ioData data)
 
     recordExpectation(FLASH_READ, addr, data);
     setExpectationCount++;
+}
+
+/**
+ * @brief Checks that all the recorded expectations have been used
+ * 
+ */
+void MockIO_VerifyComplete(void)
+{
+    failWhenNotAllExpectationsUsed();
 }
 
 /*******************************************************************************

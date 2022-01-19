@@ -420,3 +420,28 @@ TEST(MockIO, WriteWrongDataFailsWithRW)
     testFailureWith(WriteWrongDataFailsWithRW);
     fixture->assertPrintContains("R/W 1: ");
 }
+
+/**
+ * MockIO: NotAllExpectationsUsed
+ * - Declare a new function MockIO_VerifyComplete(void) in the header file
+ * - Implement it to check if getExpcCont != MaxExpCount and fail with message
+ * - Create a new fail string, report_not_all_expectations_used
+ * - Create a new fail method, failWhenNotAllExpectationsUsed() and move the 
+ *   check inside
+ * - Modify the string to include specifiers to data
+ * - Modify the method to use sprintf and update the string using maxExpCount
+ *   and getExpCount
+ */
+static void NotAllExpectationsUsed(void)
+{
+    MockIO_Expect_ReadThenReturn(0x1000, 0xaaaa);
+    MockIO_Expect_Write(0x2000, 0x5555);
+
+    MockIO_VerifyComplete();
+}
+
+TEST(MockIO, NotAllExpectationsUsed)
+{
+    testFailureWith(NotAllExpectationsUsed);
+    fixture->assertPrintContains("Expected 2 reads/writes but got 0");
+}
