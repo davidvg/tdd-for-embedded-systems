@@ -10,15 +10,13 @@ typedef enum
     FLASH_VPP_ERROR,
     FLASH_PROGRAM_ERROR,
     FLASH_PROTECTED_BLOCK_ERROR,
+    FLASH_READ_BACK_ERROR,
 } Flash_Status;
 
 
 void Flash_Create(void);
 void Flash_Destroy(void);
 int Flash_Write(ioAddress addr, ioData data);
-
-
-
 
 
 

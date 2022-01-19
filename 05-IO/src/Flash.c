@@ -32,6 +32,8 @@ int Flash_Write(ioAddress addr, ioData data)
         if (status & ProtectedBlockBit)
             return FLASH_PROTECTED_BLOCK_ERROR;
     }
-    IO_Read(addr);
+
+    if (data != IO_Read(addr))
+        return FLASH_READ_BACK_ERROR;
     return FLASH_SUCCESS;
 }

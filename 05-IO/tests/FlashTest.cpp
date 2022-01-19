@@ -130,3 +130,23 @@ TEST(Flash, WriteFalls_ProtectedBlockError)
 
     LONGS_EQUAL(FLASH_PROTECTED_BLOCK_ERROR, result);
 }
+
+/**
+ * Flash: WriteFails_FlashReadBackError
+ * After writing, a read back is done. This test checks that the correct error
+ * is returned when read data does not match written data
+ * - Add the new error type
+ * - After error checking, check that IO_Read() match data, and return the erro
+ *   if it doesn't
+ */
+TEST(Flash, WriteFails_FlashReadBackError)
+{
+    MockIO_Expect_Write(COMMAND_REGISTER, PROGRAM_COMMAND);
+    MockIO_Expect_Write(address, data);
+    MockIO_Expect_ReadThenReturn(STATUS_REGISTER, ReadyBit);
+    MockIO_Expect_ReadThenReturn(address, data-1);
+
+    result = Flash_Write(address, data);
+
+    LONGS_EQUAL(FLASH_READ_BACK_ERROR, result);
+}
