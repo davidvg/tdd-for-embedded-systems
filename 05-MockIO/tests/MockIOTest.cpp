@@ -302,3 +302,39 @@ TEST(MockIO, TooManyWrites)
     testFailureWith(TooManyWrites);
     fixture->assertPrintContains("No more expectations but was IO_Write(0x1000, 0x1234)");
 }
+
+/**
+ * MockIO, ReadWhenNoUnusedExpectationsWithRW
+ * - Create a new failure string report_no_more_expectations with content:
+ *   "R/W: %d: No more expectations but was "
+ * - Modify report_read_but_no_unused_expectations to remove the duplicated
+ *   string
+ * - Modify failWhenNoUnusedExpectations() to use snprintf to include getExpCount+1
+ *   in the created string (report_no_more_expectations)
+ * - Use snprintf to include expectation values using the Read failing report.
+ */
+static void ReadWhenNoUnusedExpectationsWithRW(void)
+{
+    IO_Read(0x10);
+}
+
+TEST(MockIO, ReadWhenNoUnusedExpectationsWithRW)
+{
+    testFailureWith(ReadWhenNoUnusedExpectationsWithRW);
+    fixture->assertPrintContains("R/W 1:");
+}
+
+/**
+ * MockIO, WriteWhenNoUnusedExpectationsWithRW
+ * - Modify report_write_but_no_unused_expectations like in the previous test
+ */
+static void WriteWhenNoUnusedExpectationsWithRW(void)
+{
+    IO_Write(0x100, 0x4321);
+}
+
+TEST(MockIO, WriteWhenNoUnusedExpectationsWithRW)
+{
+    testFailureWith(WriteWhenNoUnusedExpectationsWithRW);
+    fixture->assertPrintContains("R/W 1:");
+}

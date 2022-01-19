@@ -57,11 +57,14 @@ static char * report_too_many_write_expectations =
 static char * report_too_many_read_expectations = 
     "MockIO_Expect_Read: Too many expectations";
 
+static char * report_no_more_expectations =
+    "R/W %d: No more expectations but was ";
+
 static char * report_read_but_no_unused_expectations = 
-    "No more expectations but was IO_Read(0x%x)";
+    "IO_Read(0x%x)";
 
 static char * report_write_but_no_unused_expectations = 
-    "No more expectations but was IO_Write(0x%x, 0x%x)";
+    "IO_Write(0x%x, 0x%x)";
 
 /*******************************************************************************
  * Checks
@@ -164,8 +167,12 @@ static void failWhenNoUnusedExpectations(char * expectationFailMsg)
         int size = sizeof(msg) - 1;
         int offset;
 
-        offset = snprintf(msg, size, expectationFailMsg,
+        offset = snprintf(msg, size, report_no_more_expectations,
+                          getExpectationCount + 1);
+
+        offset = snprintf(msg+offset, size-offset, expectationFailMsg,
                           actual.addr, actual.data);
+
         FAIL_TEXT_C(msg);
     }
 }
