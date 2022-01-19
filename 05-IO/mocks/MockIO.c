@@ -347,8 +347,9 @@ void MockIO_Expect_ReadThenReturn(ioAddress addr, ioData data)
 /**
  * @brief Checks that all the recorded expectations have been used. If a failure
  * @brief has already been reported inside fail(), skips the check to avoid
- * @brief wrong behaviour
- * 
+ * @brief wrong behaviour.
+ * @brief It also allows the Mock to fail a test before calling VerifyComplete()
+ * @brief and making possible to fail a test without meeting all the expectations
  */
 void MockIO_VerifyComplete(void)
 {
