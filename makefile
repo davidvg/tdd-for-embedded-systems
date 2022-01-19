@@ -8,6 +8,7 @@ endif
 	make -C 02-LightScheduler
 	make -C 03-FormatOutput
 	make -C 04-CircularBuffer
+	make -C 05-MockIO
 
 clean:
 	make -C 01-LedDriver clean
@@ -15,3 +16,4 @@ clean:
 	make -C 02-LightScheduler clean
 	make -C 03-FormatOutput clean
 	make -C 04-CircularBuffer clean
+	make -C 05-MockIO clean
