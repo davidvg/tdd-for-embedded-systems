@@ -4,6 +4,7 @@ extern "C"
 {
     #include "Flash.h"
     #include "MockIO.h"
+    #include "FakeMicroTime.h"
 }
 
 ioAddress address;
@@ -19,7 +20,7 @@ TEST_GROUP(Flash)
         address = 0x1000;
         data = 0xBEEF;
 
-        MockIO_Create(10);
+        MockIO_Create(12);
         Flash_Create();
     }
 
@@ -166,4 +167,29 @@ TEST(Flash, WriteSucceeds_IgnoresOtherBitsUntilReady)
     result = Flash_Write(address, data);
 
     LONGS_EQUAL(FLASH_SUCCESS, result);
+}
+
+/**
+ * Flash: WriteFails_Timeout
+ * The device has a timeout of 10 us; we will simulate a time of 5 ms (500 us)
+ * and generate a timeout error
+ * - In Flash_Write() define a uint32 timestamp = MicroTime_Get()
+ * - In Flash.c #define the timeout in microseconds (private to the file)
+ * - In the while loop that checks for status=BitReady, check the lapsed time
+ *   since timestamp using MicroTime_Get() and return the error if it's greater
+ *   than the device's timeout
+ */
+TEST(Flash, WriteFails_Timeout)
+{
+    FakeMicroTime_Init(0, 500);
+    Flash_Create();
+    
+    MockIO_Expect_Write(COMMAND_REGISTER, PROGRAM_COMMAND);
+    MockIO_Expect_Write(address, data);
+
+    for (int i=0; i<10; i++)
+        MockIO_Expect_ReadThenReturn(STATUS_REGISTER, ~ReadyBit);
+
+    result = Flash_Write(address, data);
+    LONGS_EQUAL(FLASH_TIMEOUT_ERROR, result);
 }

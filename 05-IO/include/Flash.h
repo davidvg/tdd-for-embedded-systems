@@ -3,6 +3,7 @@
 
 #include "IO.h"
 #include "m28w160ect.h"
+#include "MicroTime.h"
 
 typedef enum
 {
@@ -11,6 +12,7 @@ typedef enum
     FLASH_PROGRAM_ERROR,
     FLASH_PROTECTED_BLOCK_ERROR,
     FLASH_READ_BACK_ERROR,
+    FLASH_TIMEOUT_ERROR,
     FLASH_UNKNOWN_ERROR,
 } Flash_Status;
 
@@ -18,7 +20,5 @@ typedef enum
 void Flash_Create(void);
 void Flash_Destroy(void);
 int Flash_Write(ioAddress addr, ioData data);
-
-
 
 #endif
