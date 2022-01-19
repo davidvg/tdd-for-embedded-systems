@@ -66,6 +66,9 @@ static char * report_read_but_no_unused_expectations =
 static char * report_write_but_no_unused_expectations = 
     "IO_Write(0x%x, 0x%x)";
 
+static char * report_expectation_number = 
+    "R/W %d: ";
+
 /*******************************************************************************
  * Checks
  ******************************************************************************/
@@ -121,7 +124,9 @@ static void failExpectation(char * expectationFailMsg)
     int size = sizeof(msg) - 1;
     int offset;
 
-    offset = snprintf(msg, size, expectationFailMsg,
+    offset = snprintf(msg, size, report_expectation_number, getExpectationCount+1);
+
+    offset = snprintf(msg+offset, size-offset, expectationFailMsg,
                       expected.addr, expected.data,
                       actual.addr, actual.data);
 

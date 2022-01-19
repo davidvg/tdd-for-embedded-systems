@@ -338,3 +338,85 @@ TEST(MockIO, WriteWhenNoUnusedExpectationsWithRW)
     testFailureWith(WriteWhenNoUnusedExpectationsWithRW);
     fixture->assertPrintContains("R/W 1:");
 }
+
+/**
+ * MockIO: Wrong Address uses R/W
+ * 
+ * FailExpectation() is called inside failWhen(). This happens when:
+ *   - Kind does not match
+ *   - Address does not match
+ *   - Data doese not match
+ * 
+ * - Create a new string, report_expectation_number, with "R/W %d: "
+ * - Inside failExpectation() use sprintf() to include expectation number
+ * - Use sprintf() to format expectation values
+ */
+static void ReadWrongAddressFailsWithRW(void)
+{
+    MockIO_Expect_ReadThenReturn(0x100, 0x1234);
+    
+    IO_Read(0x10);
+}
+
+TEST(MockIO, ReadWrongAddressFailsWithRW)
+{
+    testFailureWith(ReadWrongAddressFailsWithRW);
+    fixture->assertPrintContains("R/W 1:");
+}
+
+
+static void WriteWrongAddressFailsWithRW(void)
+{
+    MockIO_Expect_Write(0x100, 0x1234);
+    
+    IO_Write(0x1, 0x1234);
+}
+
+TEST(MockIO, WriteWrongAddressFailsWithRW)
+{
+    testFailureWith(WriteWrongAddressFailsWithRW);
+    fixture->assertPrintContains("R/W 1:");
+}
+
+/**
+ * Wrong Kind
+ */
+static void WriteWhenExpectedReadFailsWithRW(void)
+{
+    MockIO_Expect_ReadThenReturn(0x1, 0x1);
+    IO_Write(0x1, 0x1);
+}
+
+TEST(MockIO, WriteWhenExpectedReadFailsWithRW)
+{
+    testFailureWith(WriteWhenExpectedReadFailsWithRW);
+    fixture->assertPrintContains("R/W 1:");
+}
+
+
+static void ReadWhenExpectedWriteFailsWithRW(void)
+{
+    MockIO_Expect_Write(0x1, 0x1);
+    IO_Read(0x1);
+}
+
+TEST(MockIO, ReadWhenExpectedWriteFailsWithRW)
+{
+    testFailureWith(ReadWhenExpectedWriteFailsWithRW);
+    fixture->assertPrintContains("R/W 1:");
+}
+
+/**
+ * Wrong data
+ */
+static void WriteWrongDataFailsWithRW(void)
+{
+    MockIO_Expect_Write(0x1, 0x2);
+    IO_Write(0x1, 0xDEAD);
+}
+
+TEST(MockIO, WriteWrongDataFailsWithRW)
+{
+    testFailureWith(WriteWrongDataFailsWithRW);
+    fixture->assertPrintContains("R/W 1: ");
+}
