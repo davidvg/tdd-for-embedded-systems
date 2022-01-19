@@ -281,3 +281,24 @@ TEST(MockIO, TooManyReads)
     testFailureWith(TooManyReads);
     fixture->assertPrintContains("No more expectations but was IO_Read(0x1000)");
 }
+
+/**
+ * MockIO: TooManyWrites
+ * - Use failWhenNoUnusedExpectations() with a new message for write()
+ * - Rename report_read_no_unused_expectations to report_read_but_no_unused_expectations
+ *   to allow different messages for R/W when using this failure method
+ * - Add a new fail message for Write with address and data specifiers
+ * - In failWhenNoUnusedExpectations(), in snprintf(), pass a new value to format
+ *   the string. It will be used when 2 specifiers are used (IO_Write) and only
+ *   the first one when only one is needed (IO_Read)
+ */
+static void TooManyWrites(void)
+{
+    IO_Write(0x1000, 0x1234);
+}
+
+TEST(MockIO, TooManyWrites)
+{
+    testFailureWith(TooManyWrites);
+    fixture->assertPrintContains("No more expectations but was IO_Write(0x1000, 0x1234)");
+}

@@ -57,8 +57,11 @@ static char * report_too_many_write_expectations =
 static char * report_too_many_read_expectations = 
     "MockIO_Expect_Read: Too many expectations";
 
-static char * report_no_unused_expectations = 
+static char * report_read_but_no_unused_expectations = 
     "No more expectations but was IO_Read(0x%x)";
+
+static char * report_write_but_no_unused_expectations = 
+    "No more expectations but was IO_Write(0x%x, 0x%x)";
 
 /*******************************************************************************
  * Checks
@@ -161,7 +164,8 @@ static void failWhenNoUnusedExpectations(char * expectationFailMsg)
         int size = sizeof(msg) - 1;
         int offset;
 
-        offset = snprintf(msg, size, expectationFailMsg, actual.addr);
+        offset = snprintf(msg, size, expectationFailMsg,
+                          actual.addr, actual.data);
         FAIL_TEXT_C(msg);
     }
 }
@@ -258,6 +262,7 @@ void IO_Write(ioAddress addr, ioData data)
 {
     setExpectedAndActual(FLASH_WRITE, addr, data);
 
+    failWhenNoUnusedExpectations(report_write_but_no_unused_expectations);
     failWhen(expectationKindDoesNotMatch(), report_expected_read_was_write);
     failWhen(expectationAddressDoesNotMatch(), report_write_does_not_match);
     failWhen(expectationDataDoesNotMatch(), report_write_does_not_match);
@@ -269,7 +274,7 @@ ioData IO_Read(ioAddress addr)
 {
     setExpectedAndActual(FLASH_READ, addr, NO_EXPECTED_VALUE);
     
-    failWhenNoUnusedExpectations(report_no_unused_expectations);
+    failWhenNoUnusedExpectations(report_read_but_no_unused_expectations);
     failWhen(expectationKindDoesNotMatch(), report_expected_write_was_read);
     failWhen(expectationAddressDoesNotMatch(), report_read_wrong_address);
 
