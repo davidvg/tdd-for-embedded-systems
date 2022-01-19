@@ -25,6 +25,8 @@ static int getExpectationCount;
 static Expectation expected;
 static Expectation actual;
 
+static int failureAlreadyReported;
+
 /*******************************************************************************
  * Messages
  ******************************************************************************/
@@ -32,20 +34,20 @@ static Expectation actual;
 // Failed expectations
 static char * report_expected_read_was_write = 
     "Expected IO_Read(0x%x) would return 0x%x\n"
-    "\t        But was IO_Write(0x%x, 0x%x)";
+    "\t       But was IO_Write(0x%x, 0x%x)";
 
 static char * report_expected_write_was_read = 
     "Expected IO_Write(0x%x, 0x%x)\n"
-    "\t        But was IO_Read(0x%x)";
+    "\t       But was IO_Read(0x%x)";
 
 // Mismatched Write address or data
 static char * report_write_does_not_match = 
     "Expected IO_Write(0x%x, 0x%x)\n"
-    "\t        But was IO_Write(0x%x, 0x%x)";
+    "\t       But was IO_Write(0x%x, 0x%x)";
 
 static char * report_read_wrong_address = 
     "Expected IO_Read(0x%x) returns 0x%x\n"
-    "\t        But was IO_Read(0x%x)";
+    "\t       But was IO_Read(0x%x)";
 
 // Other messages
 static char * report_not_initialized = 
@@ -121,13 +123,24 @@ static int noUnusedExpectations(void)
  ******************************************************************************/
 
 /**
+ * @brief Updates failureAlreadyReported=1 and fails with the passed message
+ * 
+ * @param failingMsg 
+ */
+static void fail(char * failingMsg)
+{
+    failureAlreadyReported = 1;
+    FAIL_TEXT_C(failingMsg);
+}
+
+/**
  * @brief Checks that the expectations array has been initialized
  * 
  */
 static void failWhenNotInitialized(void)
 {
     if (!expectations)
-        FAIL_TEXT_C(report_not_initialized);
+        fail(report_not_initialized);
 }
 
 /**
@@ -147,7 +160,7 @@ static void failExpectation(char * expectationFailMsg)
                       expected.addr, expected.data,
                       actual.addr, actual.data);
 
-    FAIL_TEXT_C(msg);
+    fail(msg);
 }
 
 /**
@@ -173,7 +186,7 @@ static void failWhen(int condition, char *expectationFailMsg)
 static void failWhenTooManyExpectations(char *expectationFailMsg)
 {
     if (setExpectationCount == maxExpectationCount)
-        FAIL_TEXT_C(expectationFailMsg);
+        fail(expectationFailMsg);
 }
 
 /**
@@ -195,7 +208,7 @@ static void failWhenNoUnusedExpectations(char * expectationFailMsg)
         offset = snprintf(msg+offset, size-(size_t)offset, expectationFailMsg,
                           actual.addr, actual.data);
 
-        FAIL_TEXT_C(msg);
+        fail(msg);
     }
 }
 
@@ -205,16 +218,17 @@ static void failWhenNoUnusedExpectations(char * expectationFailMsg)
  */
 static void failWhenNotAllExpectationsUsed(void)
 {
-    if (getExpectationCount != maxExpectationCount)
-    {
-        char msg[100];
-        size_t size = sizeof(msg) - 1;
+    if (getExpectationCount == setExpectationCount)
+        return;
+        
+    char msg[100];
+    size_t size = sizeof(msg) - 1;
 
-        snprintf(msg, size, report_not_all_expectations_used,
-                 maxExpectationCount, getExpectationCount);
+    snprintf(msg, size, report_not_all_expectations_used,
+                setExpectationCount, getExpectationCount);
 
-        FAIL_TEXT_C(msg);
-    }
+    fail(msg);
+    
 }
 
 /*******************************************************************************
@@ -281,6 +295,7 @@ void MockIO_Create(int maxExpectations)
     expectations = calloc((size_t)maxExpectations, sizeof(Expectation));
     setExpectationCount = 0;
     getExpectationCount = 0;
+    failureAlreadyReported = 0;
 }
 
 /**
@@ -296,6 +311,7 @@ void MockIO_Destroy(void)
     maxExpectationCount = 0;
     setExpectationCount = 0;
     getExpectationCount = 0;
+    failureAlreadyReported = 0;
 }
 
 /**
@@ -329,11 +345,15 @@ void MockIO_Expect_ReadThenReturn(ioAddress addr, ioData data)
 }
 
 /**
- * @brief Checks that all the recorded expectations have been used
+ * @brief Checks that all the recorded expectations have been used. If a failure
+ * @brief has already been reported inside fail(), skips the check to avoid
+ * @brief wrong behaviour
  * 
  */
 void MockIO_VerifyComplete(void)
 {
+    if (failureAlreadyReported)
+        return;
     failWhenNotAllExpectationsUsed();
 }
 

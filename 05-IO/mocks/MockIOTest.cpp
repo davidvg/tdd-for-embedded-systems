@@ -11,7 +11,7 @@ extern "C"
 
 static void MockIOSetup()
 {
-    MockIO_Create(2);
+    MockIO_Create(3);
 }
 
 static void MockIOTeardown()
@@ -148,6 +148,7 @@ static void TooManyWriteExpectations(void)
     MockIO_Expect_Write(0, 1);
     MockIO_Expect_Write(0, 1);
     MockIO_Expect_Write(0, 1);
+    MockIO_Expect_Write(0, 1);
 }
 
 TEST(MockIO, TooManyWriteExpectations)
@@ -165,6 +166,7 @@ TEST(MockIO, TooManyWriteExpectations)
 
 static void TooManyReadExpectations()
 {
+    MockIO_Expect_ReadThenReturn(0, 0);
     MockIO_Expect_ReadThenReturn(0, 0);
     MockIO_Expect_ReadThenReturn(0, 0);
     MockIO_Expect_ReadThenReturn(0, 0);
@@ -423,14 +425,19 @@ TEST(MockIO, WriteWrongDataFailsWithRW)
 
 /**
  * MockIO: NotAllExpectationsUsed
+ * - Create a new static int failureAlreadyReported, initialize to 0 in Create()
+ * - Create a new fail(msg) method to update failureAlreadyReported=1 and call
+ *   FAIL_TEXT_C(msg)
  * - Declare a new function MockIO_VerifyComplete(void) in the header file
- * - Implement it to check if getExpcCont != MaxExpCount and fail with message
+ * - Implement it to check if failureAlreadyReported!=0 and then check if
+ *   getExpcCont != setExpCount and fail with message, return if both are equal
  * - Create a new fail string, report_not_all_expectations_used
  * - Create a new fail method, failWhenNotAllExpectationsUsed() and move the 
  *   check inside
  * - Modify the string to include specifiers to data
  * - Modify the method to use sprintf and update the string using maxExpCount
  *   and getExpCount
+ * - Substitute all FAIL_TEXT_C() with fail()
  */
 static void NotAllExpectationsUsed(void)
 {
