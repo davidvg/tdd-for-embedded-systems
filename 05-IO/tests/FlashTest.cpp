@@ -9,6 +9,8 @@ extern "C"
 ioAddress address;
 ioData data;
 
+int result;
+
 
 TEST_GROUP(Flash)
 {
@@ -52,8 +54,27 @@ TEST(Flash, WriteSucceeds_ReadyInmediately)
     MockIO_Expect_ReadThenReturn(STATUS_REGISTER, ReadyBit);
     MockIO_Expect_ReadThenReturn(address, data);
     
-    int result = Flash_Write(address, data);
+    result = Flash_Write(address, data);
 
     LONGS_EQUAL(0, result);
-    MockIO_VerifyComplete(); 
+}
+
+/**
+ * Flash: WriteSucceeds_NotInmediatelyReady
+ * - Create a ioData status=0 inside F_Write()
+ * - Crate a while to loop while (status & ReadyBit) = 0; inside the loop
+ *   update status = IO_Read(STATUS_REGISTER)
+ */
+TEST(Flash, WriteSucceeds_NotInmediatelyReady)
+{
+    MockIO_Expect_Write(COMMAND_REGISTER, PROGRAM_COMMAND);
+    MockIO_Expect_Write(address, data);
+    MockIO_Expect_ReadThenReturn(STATUS_REGISTER, 0);
+    MockIO_Expect_ReadThenReturn(STATUS_REGISTER, 0);
+    MockIO_Expect_ReadThenReturn(STATUS_REGISTER, 0);
+    MockIO_Expect_ReadThenReturn(STATUS_REGISTER, ReadyBit);
+    MockIO_Expect_ReadThenReturn(address, data);
+
+    result = Flash_Write(address, data);
+    LONGS_EQUAL(0, result);
 }
