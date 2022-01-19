@@ -138,12 +138,12 @@ static void failWhenNotInitialized(void)
 static void failExpectation(char * expectationFailMsg)
 {
     char msg[100];
-    int size = sizeof(msg) - 1;
+    size_t size = sizeof(msg) - 1;
     int offset;
 
     offset = snprintf(msg, size, report_expectation_number, getExpectationCount+1);
 
-    offset = snprintf(msg+offset, size-offset, expectationFailMsg,
+    offset = snprintf(msg+offset, size-(size_t)offset, expectationFailMsg,
                       expected.addr, expected.data,
                       actual.addr, actual.data);
 
@@ -186,13 +186,13 @@ static void failWhenNoUnusedExpectations(char * expectationFailMsg)
     if (noUnusedExpectations())
     {
         char msg[100];
-        int size = sizeof(msg) - 1;
+        size_t size = sizeof(msg) - 1;
         int offset;
 
         offset = snprintf(msg, size, report_no_more_expectations,
                           getExpectationCount + 1);
 
-        offset = snprintf(msg+offset, size-offset, expectationFailMsg,
+        offset = snprintf(msg+offset, size-(size_t)offset, expectationFailMsg,
                           actual.addr, actual.data);
 
         FAIL_TEXT_C(msg);
@@ -208,11 +208,10 @@ static void failWhenNotAllExpectationsUsed(void)
     if (getExpectationCount != maxExpectationCount)
     {
         char msg[100];
-        int size = sizeof(msg) - 1;
-        int offset;
+        size_t size = sizeof(msg) - 1;
 
-        offset = snprintf(msg, size, report_not_all_expectations_used,
-                        maxExpectationCount, getExpectationCount);
+        snprintf(msg, size, report_not_all_expectations_used,
+                 maxExpectationCount, getExpectationCount);
 
         FAIL_TEXT_C(msg);
     }
@@ -227,12 +226,12 @@ static void failWhenNotAllExpectationsUsed(void)
  * 
  * @param number 
  */
-static void printExpectation(int number)
-{
-    Expectation exp = expectations[number];
-    printf(">> Added: Exp=%d OP=%d ADDR=%d DATA=%d\n",
-           (int)number, exp.kind, exp.addr, exp.data);
-}
+// static void printExpectation(int number)
+// {
+//     Expectation exp = expectations[number];
+//     printf(">> Added: Exp=%d OP=%d ADDR=%d DATA=%d\n",
+//            (int)number, exp.kind, exp.addr, exp.data);
+// }
 
 /**
  * @brief Adds a new Expectation to the expectations array
