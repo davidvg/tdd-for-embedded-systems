@@ -264,3 +264,20 @@ TEST(MockIO, MismatchedWriteData)
     fixture->assertPrintContains("Expected IO_Write(0x0, 0x0)");
     fixture->assertPrintContains("But was IO_Write(0x0, 0xdead)");
 }
+
+/**
+ * MockIO: TooManyReads
+ * - IO_Read(): check if setExpCount == getExpCount and fail with message
+ * - Refactor to use a new method failWhenNoUnusedExpectations(msg)
+ * - Inside this method, format the string to include values from expectations
+ */
+static void TooManyReads(void)
+{
+    IO_Read(0x1000);
+}
+
+TEST(MockIO, TooManyReads)
+{
+    testFailureWith(TooManyReads);
+    fixture->assertPrintContains("No more expectations but was IO_Read(0x1000)");
+}

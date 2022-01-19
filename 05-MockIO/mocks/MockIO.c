@@ -48,6 +48,8 @@ static char * report_read_wrong_address =
     "\t        But was IO_Read(0x%x)";
 
 // Other messages
+static char * report_not_initialized = 
+    "MockIO not initialized";
 
 static char * report_too_many_write_expectations = 
     "MockIO_Expect_Write: Too many expectations";
@@ -55,52 +57,18 @@ static char * report_too_many_write_expectations =
 static char * report_too_many_read_expectations = 
     "MockIO_Expect_Read: Too many expectations";
 
-static char * report_not_initialized = 
-    "MockIO not initialized";
+static char * report_no_unused_expectations = 
+    "No more expectations but was IO_Read(0x%x)";
 
 /*******************************************************************************
- * Failing methods
+ * Checks
  ******************************************************************************/
-
-/**
- * @brief Format a string for reporting an unmet expectation and fail with text 
- * 
- * @param msg 
- */
-static void failExpectation(char * expectationFailMsg)
-{
-    char msg[100];
-    int size = sizeof(msg) - 1;
-    int offset;
-
-    offset = snprintf(msg, size, expectationFailMsg,
-                      expected.addr, expected.data,
-                      actual.addr, actual.data);
-
-    FAIL_TEXT_C(msg);
-}
-
-/**
- * @brief Checks if a failing condition is met and fails with a message
- * 
- * @param condition 
- * @param msg 
- */
-static void failWhen(int condition, char *msg)
-{
-    if (condition)
-    {
-        failExpectation(msg);
-    }
-}
-
 /**
  * @brief Checks that the Expectation's kind is NOT equal to the passed value
  * 
  * @param kind 
  * @return int 
  */
-// static int expectationKindIsNot(int kind)
 static int expectationKindDoesNotMatch(void)
 {
     return expectations[getExpectationCount].kind != actual.kind;
@@ -121,16 +89,81 @@ static int expectationDataDoesNotMatch(void)
     return expected.data != actual.data;
 }
 
-static void failWhenTooManyExpectations(char *msg)
+static int noUnusedExpectations(void)
 {
-    if (setExpectationCount == maxExpectationCount)
-        FAIL_TEXT_C(msg);
+    return getExpectationCount == setExpectationCount;
 }
+
+/*******************************************************************************
+ * Failing methods
+ ******************************************************************************/
 
 static void failWhenNotInitialized(void)
 {
     if (!expectations)
         FAIL_TEXT_C(report_not_initialized);
+}
+
+/**
+ * @brief Format a string for reporting an unmet expectation and fail with text 
+ *
+ * @param expectationFailMsg 
+ */
+static void failExpectation(char * expectationFailMsg)
+{
+    char msg[100];
+    int size = sizeof(msg) - 1;
+    int offset;
+
+    offset = snprintf(msg, size, expectationFailMsg,
+                      expected.addr, expected.data,
+                      actual.addr, actual.data);
+
+    FAIL_TEXT_C(msg);
+}
+
+/**
+ * @brief Checks if a failing condition is met and fails with a message
+ * 
+ * @param condition 
+ * @param expectationFailMsg 
+ */
+static void failWhen(int condition, char *expectationFailMsg)
+{
+    if (condition)
+    {
+        failExpectation(expectationFailMsg);
+    }
+}
+
+/**
+ * @brief Checks that there the maximum number of expectations have been recorded
+ * @brief and a new one cannot be added to the list, and fails with a message
+ * 
+ * @param expectationFailMsg 
+ */
+static void failWhenTooManyExpectations(char *expectationFailMsg)
+{
+    if (setExpectationCount == maxExpectationCount)
+        FAIL_TEXT_C(expectationFailMsg);
+}
+
+/**
+ * @brief Checks that there are no unused expectations and fails with a message
+ * 
+ * @param expectationFailMsg 
+ */
+static void failWhenNoUnusedExpectations(char * expectationFailMsg)
+{
+    if (noUnusedExpectations())
+    {
+        char msg[100];
+        int size = sizeof(msg) - 1;
+        int offset;
+
+        offset = snprintf(msg, size, expectationFailMsg, actual.addr);
+        FAIL_TEXT_C(msg);
+    }
 }
 
 /*******************************************************************************
@@ -236,6 +269,7 @@ ioData IO_Read(ioAddress addr)
 {
     setExpectedAndActual(FLASH_READ, addr, NO_EXPECTED_VALUE);
     
+    failWhenNoUnusedExpectations(report_no_unused_expectations);
     failWhen(expectationKindDoesNotMatch(), report_expected_write_was_read);
     failWhen(expectationAddressDoesNotMatch(), report_read_wrong_address);
 
