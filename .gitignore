@@ -1,15 +1,13 @@
 .vscode
+**/*.xmi
+
+# Compiled targets
 **/build/**
 **/*.o
 **/*.d
 **/*.a
 **/*.gcda
 **/*.gcno
-**/*.xmi
-
-# Compiled targets
 **/*.out
 *_tests
 **/*.map
-
-FlashTest.txt

@@ -186,7 +186,25 @@ TEST(Flash, WriteFails_Timeout)
     
     MockIO_Expect_Write(COMMAND_REGISTER, PROGRAM_COMMAND);
     MockIO_Expect_Write(address, data);
+    for (int i=0; i<10; i++)
+        MockIO_Expect_ReadThenReturn(STATUS_REGISTER, ~ReadyBit);
 
+    result = Flash_Write(address, data);
+    LONGS_EQUAL(FLASH_TIMEOUT_ERROR, result);
+}
+
+/**
+ * Flash: WriteFails_TimerRollsOver
+ * Checks that code works when the timer overflows
+ * This test should pass.
+ */
+TEST(Flash, WriteFails_TimerRollsOver)
+{
+    FakeMicroTime_Init(0xFFFFFFFF, 500);
+    Flash_Create();
+
+    MockIO_Expect_Write(COMMAND_REGISTER, PROGRAM_COMMAND);
+    MockIO_Expect_Write(address, data);
     for (int i=0; i<10; i++)
         MockIO_Expect_ReadThenReturn(STATUS_REGISTER, ~ReadyBit);
 
