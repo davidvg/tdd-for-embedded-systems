@@ -9,6 +9,7 @@ endif
 	make -C 03-FormatOutput
 	make -C 04-CircularBuffer
 	make -C 05-IO
+	make -C 05-IO-CppUMock
 
 clean:
 	make -C 01-LedDriver clean
@@ -17,3 +18,4 @@ clean:
 	make -C 03-FormatOutput clean
 	make -C 04-CircularBuffer clean
 	make -C 05-IO clean
+	make -C 05-IO-CppUMock clean
