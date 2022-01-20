@@ -15,6 +15,8 @@ void Flash_Destroy(void)
 
 static int writeError(ioData status)
 {
+    IO_Write(COMMAND_REGISTER, RESET_COMMAND);
+    
     if (status & VppErrorBit)
         return FLASH_VPP_ERROR;
     else if (status & ProgramErrorBit)
