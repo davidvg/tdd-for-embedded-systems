@@ -11,11 +11,6 @@
 *_tests
 **/*.map
 
-
-06-LightScheduler-multiController/LightControllerTest.txt
-06-LightScheduler-multiController/LightSchedulerRandomizeTest.txt
-06-LightScheduler-multiController/LightSchedulerTest.txt
-06-LightScheduler-multiController/RandomMinuteTest.txt
-06-LightScheduler-multiController/tests/LightControllerSpyTest.cpp
-06-LightScheduler-multiController/FakeTimeServiceTest.txt
-06-LightScheduler-multiController/LightDriverSpyTest.txt
+06-LightScheduler-multiController/ref_02/
+06-LightScheduler-multiController/ref_t2/
+06-LightScheduler-multiController/ref_t1/
