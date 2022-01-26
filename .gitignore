@@ -11,6 +11,8 @@
 *_tests
 **/*.map
 
-06-LightScheduler-multiController/ref_02/
-06-LightScheduler-multiController/ref_t2/
-06-LightScheduler-multiController/ref_t1/
+06-LightScheduler-multiController/prev
+06-LightScheduler-multiController/*.txt
+
+06-LightScheduler-multiController/scripts/get_tests.py
+06-LightScheduler-multiController/scripts/get_tests.sh
