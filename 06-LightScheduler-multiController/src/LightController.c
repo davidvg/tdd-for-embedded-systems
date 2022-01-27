@@ -21,6 +21,8 @@ void LightController_Destroy(void)
 
 bool LightController_Add(int id, LightDriver driver)
 {
+    if ((id < 0) || (id >= MAX_LIGHTS))
+        return false;
 
     LightDriverSpy_Destroy(drivers[id]);
 
@@ -33,6 +35,8 @@ bool LightController_Add(int id, LightDriver driver)
 void LightController_TurnOn(int id)
 {
     LightDriver driver = drivers[id];
+    if (driver == NULL)
+        return;
 
     LightDriverSpy_TurnOn(driver);
 }
@@ -40,6 +44,8 @@ void LightController_TurnOn(int id)
 void LightController_TurnOff(int id)
 {
     LightDriver driver = drivers[id];
+    if (driver == NULL)
+        return;
 
     LightDriverSpy_TurnOff(driver);
 }
