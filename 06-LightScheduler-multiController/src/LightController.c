@@ -19,12 +19,14 @@ void LightController_Destroy(void)
     }
 }
 
-void LightController_Add(int id, LightDriver driver)
+bool LightController_Add(int id, LightDriver driver)
 {
 
     LightDriverSpy_Destroy(drivers[id]);
 
     drivers[id] = driver;
+
+    return true;
 }
 
 

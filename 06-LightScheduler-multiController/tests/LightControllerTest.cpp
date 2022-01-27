@@ -1,7 +1,8 @@
 extern "C"
 {
-#include "LightController.h"
-#include "LightDriverSpy.h"
+    #include "LightController.h"
+    #include "LightDriverSpy.h"
+    #include <stdbool.h>
 }
 
 #include "CppUTest/TestHarness.h"
@@ -61,14 +62,21 @@ TEST(LightController, AddingDriverDestroysPreviousAndDoesNotLeak)
     LightController_Destroy();
 }
 
-// TEST(LightController, AllDriversDestroyed)
-// {
-// 	for (int i = 0; i < MAX_LIGHTS; i++)
-// 	{
-// 		LightDriver spy = LightDriverSpy_Create(i);
-// 		LONGS_EQUAL(TRUE, LightController_Add(i, spy));
-// 	}
-// }
+/**
+ * LightController: AllDriversDestroyed
+ * Drivers are added in setup(); here all the drivers are overwritten. If they
+ * are not destroyed, memory leaks happen. To detect a success when adding a
+ * driver, a bool is returned by LightController_Add()
+ * - Modify LightController_Add() to return bool, and return true
+ */
+TEST(LightController, AllDriversDestroyed)
+{
+	for (int i = 0; i < MAX_LIGHTS; i++)
+	{
+		spy = LightDriverSpy_Create(i);
+		LONGS_EQUAL(true, LightController_Add(i, spy));
+	}
+}
 
 // TEST(LightController, ValidIdLowerRange)
 // {
