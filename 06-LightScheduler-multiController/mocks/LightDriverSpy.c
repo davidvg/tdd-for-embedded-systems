@@ -29,6 +29,15 @@ void LightDriverSpy_Reset()
     }
 }
 
+void LightDriverSpy_AddSpiesToController(void)
+{
+    for (int i=0; i<MAX_LIGHTS; i++)
+    {
+        LightDriver spy = (LightDriver)LightDriverSpy_Create(i);
+        LightController_Add(i, spy);
+    }
+}
+
 void LightDriverSpy_Destroy(LightDriver driver)
 {
     LightDriverSpy self = (LightDriverSpy)driver;
