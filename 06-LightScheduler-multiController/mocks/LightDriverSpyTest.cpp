@@ -16,7 +16,7 @@ TEST_GROUP(LightDriverSpy)
 
     void setup()
     {
-        // LightDriverSpy_Reset();
+        LightDriverSpy_Reset();
         lightDriverSpy = LightDriverSpy_Create(1);
     }
 
@@ -58,6 +58,35 @@ TEST(LightDriverSpy, Off)
 {
     LightDriverSpy_TurnOff(lightDriverSpy);
     LONGS_EQUAL(LIGHT_OFF, LightDriverSpy_GetState(1));
+}
+
+/**
+ * - Include LightController.h
+ * - Create static int states[MAX_LIGHTS] and initialize to UNKNOWN in Reset
+ * - Add LightDriverSpy_Reset() to setup()
+ * - Modify _GetState(id) to return states[id]
+ * 
+ * ### LightDriverSpy Implementation ###
+ * - In LightDriverSpy.c create struct LightDriverSpyStruct to include a
+ *   LightDriverStruct base.
+ * - Create *LightDriverSpy, a pointer to struct LightDriverSpyStruct
+ * - In Create() allocate memory for the struct. Return it as a LightDriver.
+ *   Initialize the allocated object's base: id=id and type=TestLightDriver
+ * - In Destroy() free memory
+ * - In TurnOn() cast driver to LightDriverSpy and update states[self->base.id].
+ *   Update lastId with base.id
+ * - Do the same in TurnOff()
+ */
+TEST(LightDriverSpy, OtherId)
+{
+    LightDriver otherSpy = LightDriverSpy_Create(7);
+    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(7));
+
+    LightDriverSpy_TurnOn(otherSpy);
+    LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(7));
+    LONGS_EQUAL(7, LightDriverSpy_GetLastId());
+    
+    LightDriverSpy_Destroy(otherSpy);
 }
 
 /**

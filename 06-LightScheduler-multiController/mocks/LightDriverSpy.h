@@ -12,10 +12,9 @@ enum{
 
 LightDriver LightDriverSpy_Create(int id);
 void LightDriverSpy_Reset();
-void LightDriverSpy_Destroy(LightDriver lightdriver);
-
-void LightDriverSpy_TurnOn(LightDriver lightdriver);
-void LightDriverSpy_TurnOff(LightDriver lightdriver);
+void LightDriverSpy_Destroy(LightDriver driver);
+void LightDriverSpy_TurnOn(LightDriver driver);
+void LightDriverSpy_TurnOff(LightDriver driver);
 
 int LightDriverSpy_GetState(int id);
 int LightDriverSpy_GetLastId(void);
