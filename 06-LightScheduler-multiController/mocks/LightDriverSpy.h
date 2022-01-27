@@ -11,7 +11,7 @@ enum{
 };
 
 LightDriver LightDriverSpy_Create(int id);
-void LightDriverSpy_Reset();
+void LightDriverSpy_Reset(void);
 void LightDriverSpy_AddSpiesToController(void);
 void LightDriverSpy_Destroy(LightDriver driver);
 

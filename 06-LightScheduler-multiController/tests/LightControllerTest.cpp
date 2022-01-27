@@ -27,18 +27,6 @@ TEST_GROUP(LightController)
 };
 
 /**
- * - Create LightController_Add(id, driver)
- */
-// TEST(LightController, AddSpyDriver)
-// {
-//     spy = LightDriverSpy_Create(2);
-//     LightController_Add(1, spy);
-//     LONGS_EQUAL(1, LightDriverSpy_GetLastId());
-//     LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(1));
-//     LightDriverSpy_Destroy(spy);
-// }
-
-/**
  * - Create src/LightController.c
  * - Rename LightController_On() to LightController_TurnOn(id)
  * - Update LightController_On() and _Off() inside:
@@ -62,14 +50,16 @@ TEST(LightController, TurnOff)
 	LONGS_EQUAL(LIGHT_OFF, LightDriverSpy_GetState(1));
 }
 
-// /* START: AddingDriverDestroysPrevious */
-// TEST(LightController, AddingDriverDestroysPreviousAndDoesNotLeak)
-// {
-//     LightDriver spy = LightDriverSpy_Create(1);
-//     LightController_Add(1, spy);
-//     LightController_Destroy();
-// }
-// /* END: AddingDriverDestroysPrevious */
+/**
+ * LightController: AddingDriverDestroysPreviousAndDoesNotLeak
+ * - Call LightDriverSpy_Destroy(drivers[id]) before adding the driver to the array
+ */
+TEST(LightController, AddingDriverDestroysPreviousAndDoesNotLeak)
+{
+    spy = LightDriverSpy_Create(1);
+    LightController_Add(1, spy);
+    LightController_Destroy();
+}
 
 // TEST(LightController, AllDriversDestroyed)
 // {
