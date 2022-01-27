@@ -27,10 +27,12 @@ CPP_PLATFORM = Gcc
 # CPPUTEST_MEMLEAK_DETECTOR_NEW_MACRO_FILE = -include include/ExamplesNewOverrides.h
 
 SRC_DIRS = \
-	src 
+	src \
+	src/devices
 
 TEST_SRC_DIRS = \
-	tests
+	tests \
+	tests/devices
 
 INCLUDE_DIRS = \
   . \
