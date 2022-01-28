@@ -38,7 +38,16 @@ void LightController_TurnOn(int id)
     if (driver == NULL)
         return;
 
-    LightDriverSpy_TurnOn(driver);
+    switch (driver->type)
+    {
+    case X10:
+        X10LightDriver_TurnOn(driver);
+        break;
+    case TestLightDriver:
+        LightDriverSpy_TurnOn(driver);
+    default:
+        break;
+    }
 }
 
 void LightController_TurnOff(int id)
@@ -47,5 +56,14 @@ void LightController_TurnOff(int id)
     if (driver == NULL)
         return;
 
-    LightDriverSpy_TurnOff(driver);
+    switch (driver->type)
+    {
+    case X10:
+        X10LightDriver_TurnOff(driver);
+        break;
+    case TestLightDriver:
+        LightDriverSpy_TurnOff(driver);    
+    default:
+        break;
+    }
 }

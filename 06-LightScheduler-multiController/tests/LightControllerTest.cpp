@@ -2,6 +2,7 @@ extern "C"
 {
     #include "LightController.h"
     #include "LightDriverSpy.h"
+    #include "X10LightDriver.h"
     #include <stdbool.h>
 }
 
