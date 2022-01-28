@@ -1,9 +1,27 @@
 #include "LightController.h"
 #include "LightDriverSpy.h"
+#include "X10LightDriver.h"
 #include <string.h>
 
 
 static LightDriver drivers[MAX_LIGHTS];
+
+static void destroy(LightDriver driver)
+{
+    if (!driver)
+        return;
+
+    switch (driver->type)
+    {
+    case X10:
+        X10LightDriver_Destroy(driver);
+        break;
+    case TestLightDriver:
+        LightDriverSpy_Destroy(driver);        
+    default:
+        break;
+    }
+}
 
 void LightController_Create(void)
 {
@@ -14,7 +32,8 @@ void LightController_Destroy(void)
 {
     for (int i=0; i<MAX_LIGHTS; i++)
     {
-        LightDriverSpy_Destroy(drivers[i]);
+        LightDriver driver = drivers[i];
+        destroy(driver);   
         drivers[i] = NULL;
     }
 }
@@ -24,8 +43,7 @@ bool LightController_Add(int id, LightDriver driver)
     if ((id < 0) || (id >= MAX_LIGHTS))
         return false;
 
-    LightDriverSpy_Destroy(drivers[id]);
-
+    destroy(drivers[id]);
     drivers[id] = driver;
 
     return true;
