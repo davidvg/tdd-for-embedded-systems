@@ -43,3 +43,13 @@ TEST(X10LightDriver, Create)
     LONGS_EQUAL(X10, driver->type);
     LONGS_EQUAL(1, driver->id);
 }
+
+TEST(X10LightDriver, TurnOn)
+{
+    X10LightDriver_TurnOn(driver);
+}
+
+TEST(X10LightDriver, TurnOff)
+{
+    X10LightDriver_TurnOff(driver);
+}
