@@ -1,5 +1,4 @@
 #include "LightDriverSpy.h"
-#include "LightController.h"
 
 typedef struct LightDriverSpyStruct *LightDriverSpy;
 typedef struct LightDriverSpyStruct
@@ -24,6 +23,7 @@ LightDriver LightDriverSpy_Create(int id)
 
     self->base.type = TestLightDriver;
     self->base.id = id;
+    update(id, LIGHT_STATE_UNKNOWN);
 
     return (LightDriver) self;
 }

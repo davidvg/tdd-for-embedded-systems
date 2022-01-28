@@ -2,6 +2,7 @@
 #define _LIGHT_DRIVER_SPY_H
 
 #include "LightDriver.h"
+#include "LightController.h"
 
 enum{
     LIGHT_STATE_UNKNOWN=-1,
