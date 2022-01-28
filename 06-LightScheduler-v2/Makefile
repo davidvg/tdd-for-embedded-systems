@@ -11,7 +11,7 @@ ifndef SILENCE
 endif
 
 #--- Inputs ----#
-COMPONENT_NAME = LightScheduler_multiController
+COMPONENT_NAME = LightScheduler_v2
 MEMORY_MAP_FILE = $(COMPONENT_NAME).map
 
 CPPUTEST_USE_EXTENSIONS = Y
