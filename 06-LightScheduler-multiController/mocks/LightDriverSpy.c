@@ -11,6 +11,13 @@ static int states[MAX_LIGHTS];
 static int lastState;
 static int lastId;
 
+static void update(int id, int state)
+{
+    states[id] = state;
+    lastState = state;
+    lastId = id;
+}
+
 LightDriver LightDriverSpy_Create(int id)
 {
     LightDriverSpy self = calloc(1, sizeof(LightDriverSpy));
@@ -47,17 +54,13 @@ void LightDriverSpy_Destroy(LightDriver driver)
 void LightDriverSpy_TurnOn(LightDriver driver)
 {
     LightDriverSpy self = (LightDriverSpy)driver;
-    states[self->base.id] = LIGHT_ON;
-    lastState = LIGHT_ON;
-    lastId = self->base.id;
+    update(self->base.id, LIGHT_ON);
 }
 
 void LightDriverSpy_TurnOff(LightDriver driver)
 {
     LightDriverSpy self = (LightDriverSpy)driver;
-    states[self->base.id] = LIGHT_OFF;
-    lastState = LIGHT_OFF;
-    lastId = 1;
+    update(self->base.id, LIGHT_OFF);
 }
 
 int LightDriverSpy_GetState(int id)
