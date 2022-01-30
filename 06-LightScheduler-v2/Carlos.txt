@@ -1,3 +1,0 @@
-- Cómo llevar la cuenta de todos los tipos de datos existentes, dónde se define
-  cada uno, etc. Por ejemplo, cómo recordar dónde se define cada enum, struct,
-  etc
