@@ -11,10 +11,15 @@ static bool isIdOutOfBounds(int id)
     return (id < 0) || (id >= MAX_LIGHTS);
 }
 
+static bool isInvalidDriver(LightDriver driver)
+{
+    return driver == NULL;
+}
+
 // TODO Check if this method is needed
 static void destroy(LightDriver driver)
 {
-    if (!driver)
+    if (isInvalidDriver(driver))
         return;
 
     LightDriver_Destroy(driver);
@@ -40,6 +45,9 @@ bool LightController_Add(int id, LightDriver driver)
     if (isIdOutOfBounds(id))
         return false;
 
+    if (isInvalidDriver(driver))
+        return false;
+
     destroy(drivers[id]);
     drivers[id] = driver;
 
@@ -51,7 +59,7 @@ bool LightController_Remove(int id)
     if (isIdOutOfBounds(id))
         return false;
 
-    if (drivers[id] == NULL)
+    if (isInvalidDriver(drivers[id]))
         return false;
 
     destroy(drivers[id]);
@@ -62,7 +70,7 @@ bool LightController_Remove(int id)
 void LightController_TurnOn(int id)
 {
     LightDriver driver = drivers[id];
-    if (driver == NULL)
+    if (isInvalidDriver(driver))
         return;
 
     LightDriver_TurnOn(driver);
@@ -71,7 +79,7 @@ void LightController_TurnOn(int id)
 void LightController_TurnOff(int id)
 {
     LightDriver driver = drivers[id];
-    if (driver == NULL)
+    if (isInvalidDriver(driver))
         return;
 
     LightDriver_TurnOff(driver);

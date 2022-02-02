@@ -146,6 +146,15 @@ TEST(LightController, RemoveNonExistingLightDriverFails)
     CHECK(LightController_Remove(10) == false);
 }
 
+/**
+ * LightController: RejectsNullDrivers
+ * - In _Add() check if driver==NULL and return false
+ */
+TEST(LightController, RejectsNullDrivers)
+{
+    LONGS_EQUAL(false, LightController_Add(1, NULL));
+}
+
 // /**
 //  * LightController: NonAddedLightDoesNothing
 //  */
