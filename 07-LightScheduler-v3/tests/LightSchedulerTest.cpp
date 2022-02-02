@@ -16,8 +16,10 @@ TEST_GROUP(LightScheduler)
     {
         LightDriverSpy_Reset();
         LightDriverSpy_InstallInterface();
+
         LightController_Create();
 		LightDriverSpy_AddSpiesToController();
+        
         LightScheduler_Create();
     }
 
@@ -56,14 +58,15 @@ TEST(LightScheduler, createDestroy)
 
 }
 
-// /**
-//  * LightScheduler: NoChangeToLightsDuringInitialization
-//  * 
-//  */
-// TEST(LightScheduler, NoChangeToLightsDuringInitialization)
-// {
-//     checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
-// }
+/**
+ * LightScheduler: NoChangeToLightsDuringInitialization
+ * 
+ */
+TEST(LightScheduler, NoChangeToLightsDuringInitialization)
+{
+    LONGS_EQUAL(LIGHT_ID_UNKNOWN, LightDriverSpy_GetLastId());
+    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetLastState());
+}
 
 // /**
 //  * LightScheduler: NoScheduleNothingHappens
@@ -78,31 +81,31 @@ TEST(LightScheduler, createDestroy)
 
 // }
 
-// /**
-//  * LightScheduler: ScheduleOnEverydayNotTimeYet
-//  */
-// TEST(LightScheduler, ScheduleOnEverydayNotTimeYet)
-// {
-//     LightScheduler_ScheduleTurnOn(3, EVERYDAY, 1200);
-//     setTimeTo(MONDAY, 1199);
+/**
+ * LightScheduler: ScheduleOnEverydayNotTimeYet
+ */
+TEST(LightScheduler, ScheduleOnEverydayNotTimeYet)
+{
+    LightScheduler_ScheduleTurnOn(3, EVERYDAY, 1200);
+    setTimeTo(MONDAY, 1199);
 
-//     LightScheduler_WakeUp();
+    LightScheduler_WakeUp();
     
-//     checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
-// }
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
 
-// /**
-//  * LightScheduler: ScheduleOnEverydayItsTime
-//  */
-// TEST(LightScheduler, ScheduleOnEverydayItsTime)
-// {
-//     LightScheduler_ScheduleTurnOn(3, EVERYDAY, 1200);
-//     setTimeTo(MONDAY, 1200);
+/**
+ * LightScheduler: ScheduleOnEverydayItsTime
+ */
+TEST(LightScheduler, ScheduleOnEverydayItsTime)
+{
+    LightScheduler_ScheduleTurnOn(3, EVERYDAY, 1200);
+    setTimeTo(MONDAY, 1200);
 
-//     LightScheduler_WakeUp();
+    LightScheduler_WakeUp();
 
-//     checkLightState(3, LIGHT_ON);
-// }
+    checkLightState(3, LIGHT_ON);
+}
 
 // /**
 //  * LightScheduler: ScheduleOffEverydayItsTime
@@ -118,31 +121,31 @@ TEST(LightScheduler, createDestroy)
 //     checkLightState(3, LIGHT_OFF);
 // }
 
-// /**
-//  * LightScheduler: ScheduleTuesdayButItsMonday
-//  */
-// TEST(LightScheduler, ScheduleTuesdayButItsMonday)
-// {
-//     LightScheduler_ScheduleTurnOn(3, TUESDAY, 1200);
-//     setTimeTo(MONDAY, 1200);
+/**
+ * LightScheduler: ScheduleTuesdayButItsMonday
+ */
+TEST(LightScheduler, ScheduleTuesdayButItsMonday)
+{
+    LightScheduler_ScheduleTurnOn(3, TUESDAY, 1200);
+    setTimeTo(MONDAY, 1200);
 
-//     LightScheduler_WakeUp();
+    LightScheduler_WakeUp();
 
-//     checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
-// }
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
 
-// /**
-//  * LightScheduler: ScheduleTuesdayAndItsTuesday
-//  */
-// TEST(LightScheduler, ScheduleTuesdayAndItsTuesday)
-// {
-//     LightScheduler_ScheduleTurnOn(3, TUESDAY, 1200);
-//     setTimeTo(TUESDAY, 1200);
+/**
+ * LightScheduler: ScheduleTuesdayAndItsTuesdayAndItsTime
+ */
+TEST(LightScheduler, ScheduleTuesdayAndItsTuesdayAndItsTime)
+{
+    LightScheduler_ScheduleTurnOn(3, TUESDAY, 1200);
+    setTimeTo(TUESDAY, 1200);
 
-//     LightScheduler_WakeUp();
+    LightScheduler_WakeUp();
 
-//     checkLightState(3, LIGHT_ON);
-// }
+    checkLightState(3, LIGHT_ON);
+}
 
 // /**
 //  * LightScheduler: ScheduleWeekEndItsFriday
