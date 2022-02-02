@@ -16,15 +16,6 @@ static bool isInvalidDriver(LightDriver driver)
     return driver == NULL;
 }
 
-// TODO Check if this method is needed
-static void destroy(LightDriver driver)
-{
-    if (isInvalidDriver(driver))
-        return;
-
-    LightDriver_Destroy(driver);
-}
-
 void LightController_Create(void)
 {
     memset(drivers, 0, sizeof(drivers));
@@ -35,7 +26,7 @@ void LightController_Destroy(void)
     for (int i=0; i<MAX_LIGHTS; i++)
     {
         LightDriver driver = drivers[i];
-        destroy(driver);   
+        LightDriver_Destroy(driver);
         drivers[i] = NULL;
     }
 }
@@ -48,7 +39,7 @@ bool LightController_Add(int id, LightDriver driver)
     if (isInvalidDriver(driver))
         return false;
 
-    destroy(drivers[id]);
+    LightDriver_Destroy(drivers[id]);
     drivers[id] = driver;
 
     return true;
@@ -62,7 +53,7 @@ bool LightController_Remove(int id)
     if (isInvalidDriver(drivers[id]))
         return false;
 
-    destroy(drivers[id]);
+    LightDriver_Destroy(drivers[id]);
     drivers[id] = NULL;
     return true;
 }

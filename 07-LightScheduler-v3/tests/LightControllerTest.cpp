@@ -176,18 +176,3 @@ TEST(LightController, TurnOffNonExistingDriverDoesNothing)
     LightController_TurnOff(7);
     LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(7));
 }
-
-// /**
-//  * LightController: NonAddedLightDoesNothing
-//  */
-// TEST(LightController, NonAddedLightDoesNothing)
-// {
-//     LightController_Add(1, NULL);
-//     LightController_TurnOn(1);
-//     LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(1));
-//     LightController_TurnOff(1);
-//     LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(1));
-// }
-
-
-
