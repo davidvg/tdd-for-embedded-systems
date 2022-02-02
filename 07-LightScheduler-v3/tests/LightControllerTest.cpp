@@ -48,21 +48,25 @@ TEST(LightController, AddingDriverDestroysPreviousAndDoesNotLeak)
     // LightController_Destroy();
 }
 
-// TEST(LightController, TurnOff)
-// {
-// 	LightController_TurnOff(1);
-// 	LONGS_EQUAL(LIGHT_OFF, LightDriverSpy_GetState(1));
-// }
+/**
+ * LightController: TurnOn
+ * - In LightController_TurnOn() call LightDriver_TurnOn(driver)
+ */
+TEST(LightController, TurnOn)
+{
+	LightController_TurnOn(7);
+	LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(7));
+}
 
-// /**
-//  * LightController: AddingDriverDestroysPreviousAndDoesNotLeak
-//  */
-// TEST(LightController, AddingDriverDestroysPreviousAndDoesNotLeak)
-// {
-//     spy = LightDriverSpy_Create(1);
-//     LightController_Add(1, spy);
-//     LightController_Destroy();
-// }
+/**
+ * LightController: TurnOff
+ * - In LightController_TurnOff() call LightDriver_TurnOff(driver)
+ */
+TEST(LightController, TurnOff)
+{
+	LightController_TurnOff(1);
+	LONGS_EQUAL(LIGHT_OFF, LightDriverSpy_GetState(1));
+}
 
 // /**
 //  * LightController: AllDriversDestroyed
