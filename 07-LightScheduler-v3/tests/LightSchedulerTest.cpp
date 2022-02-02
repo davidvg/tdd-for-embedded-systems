@@ -147,93 +147,93 @@ TEST(LightScheduler, ScheduleTuesdayAndItsTuesdayAndItsTime)
     checkLightState(3, LIGHT_ON);
 }
 
-// /**
-//  * LightScheduler: ScheduleWeekEndItsFriday
-//  */
-// TEST(LightScheduler, ScheduleWeekEndItsFriday)
-// {
-//     LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
-//     setTimeTo(FRIDAY, 1200);
-//     LightScheduler_WakeUp();
-//     checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
-// }
+/**
+ * LightScheduler: ScheduleOffTuesdayAndItsTuesdayAndItsTime
+ */
+TEST(LightScheduler, ScheduleOffTuesdayAndItsTuesdayAndItsTime)
+{
+    LightScheduler_ScheduleTurnOff(3, TUESDAY, 1200);
+    setTimeTo(TUESDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(3, LIGHT_OFF);
+}
 
-// /**
-//  * LightScheduler: ScheduleWeekEndItsSaturday
-//  */
-// TEST(LightScheduler, ScheduleWeekEndItsSaturday)
-// {
-//     LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
-//     setTimeTo(SATURDAY, 1200);
-//     LightScheduler_WakeUp();
-//     checkLightState(3, LIGHT_ON);
-// }
+/**
+ * LightScheduler: ScheduleWeekEndItsFriday
+ */
+TEST(LightScheduler, ScheduleWeekEndItsFriday)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
+    setTimeTo(FRIDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
 
-// /**
-//  * LightScheduler: ScheduleWeekEndItsSunday
-//  */
-// TEST(LightScheduler, ScheduleWeekEndItsSunday)
-// {
-//     LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
-//     setTimeTo(SUNDAY, 1200);
-//     LightScheduler_WakeUp();
-//     checkLightState(3, LIGHT_ON);
-// }
+/**
+ * LightScheduler: ScheduleWeekEndItsSaturdayAndItsTime
+ */
+TEST(LightScheduler, ScheduleWeekEndItsSaturdayAndItsTime)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
+    setTimeTo(SATURDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(3, LIGHT_ON);
+}
 
-// /**
-//  * LightScheduler: ScheduleWeekEndItsMonday
-//  */
-// TEST(LightScheduler, ScheduleWeekEndItsMonday)
-// {
-//     LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
-//     setTimeTo(MONDAY, 1200);
-//     LightScheduler_WakeUp();
-//     checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
-// }
+/**
+ * LightScheduler: ScheduleWeekEndItsSundayAndItsTime
+ */
+TEST(LightScheduler, ScheduleWeekEndItsSundayAndItsTime)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
+    setTimeTo(SUNDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(3, LIGHT_ON);
+}
 
-// /**
-//  * LightScheduler: ScheduleWeekdayItsSunday
-//  */
-// TEST(LightScheduler, ScheduleWeekdayItsSunday)
-// {
-//     LightScheduler_ScheduleTurnOn(3, WEEKDAY, 1200);
-//     setTimeTo(SUNDAY, 1200);
-//     LightScheduler_WakeUp();
-//     checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
-// }
+/**
+ * LightScheduler: ScheduleWeekEndItsMonday
+ */
+TEST(LightScheduler, ScheduleWeekEndItsMonday)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKEND, 1200);
+    setTimeTo(MONDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
 
-// /**
-//  * LightScheduler: ScheduleWeekdayItsMonday
-//  */
-// TEST(LightScheduler, ScheduleWeekdayItsMonday)
-// {
-//     LightScheduler_ScheduleTurnOn(3, WEEKDAY, 1200);
-//     setTimeTo(MONDAY, 1200);
-//     LightScheduler_WakeUp();
-//     checkLightState(3, LIGHT_ON);
-// }
+/**
+ * LightScheduler: ScheduleWeekdayItsSunday
+ */
+TEST(LightScheduler, ScheduleWeekdayItsSunday)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKDAY, 1200);
+    setTimeTo(SUNDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(LIGHT_ID_UNKNOWN, LIGHT_STATE_UNKNOWN);
+}
 
-// /**
-//  * LightScheduler: ScheduleWeekdayItsFriday
-//  */
-// TEST(LightScheduler, ScheduleWeekdayItsFriday)
-// {
-//     LightScheduler_ScheduleTurnOn(3, WEEKDAY, 1200);
-//     setTimeTo(FRIDAY, 1200);
-//     LightScheduler_WakeUp();
-//     checkLightState(3, LIGHT_ON);
-// }
+/**
+ * LightScheduler: ScheduleWeekdayItsMondayAndItsTime
+ */
+TEST(LightScheduler, ScheduleWeekdayItsMondayAndItsTime)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKDAY, 1200);
+    setTimeTo(MONDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(3, LIGHT_ON);
+}
 
-// /**
-//  * LightScheduler: RememberAllLightStates
-//  */
-// TEST(LightScheduler, RememberAllLightStates)
-// {
-//     LightController_TurnOn(0);
-//     LightController_TurnOn(31);
-//     LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(0));
-//     LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(31));
-// }
+/**
+ * LightScheduler: ScheduleWeekdayItsFridayAndItsTime
+ */
+TEST(LightScheduler, ScheduleWeekdayItsFridayAndItsTime)
+{
+    LightScheduler_ScheduleTurnOn(3, WEEKDAY, 1200);
+    setTimeTo(FRIDAY, 1200);
+    LightScheduler_WakeUp();
+    checkLightState(3, LIGHT_ON);
+}
 
 // /**
 //  * LightScheduler: ScheduleTwoEventsAtTheSameTime
