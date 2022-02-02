@@ -92,20 +92,25 @@ TEST(LightDriverSpy, Off)
 //     LightDriverSpy_Destroy(otherSpy);
 // }
 
-// /**
-//  * LightDriverSpy: RecordsLastIdLastTurnOn
-//  */
-// TEST(LightDriverSpy, RecordsLastIdLastTurnOn)
-// {
-//     LightDriverSpy_TurnOff(lightDriverSpy);
-//     LONGS_EQUAL(1, LightDriverSpy_GetLastId());
-//     LONGS_EQUAL(LIGHT_OFF, LightDriverSpy_GetLastState());
-// }
+/**
+ * LightDriverSpy: RecordsLastIdLastTurnOn
+ * This test should pass
+ */
+TEST(LightDriverSpy, RecordsLastIdLastTurnOn)
+{
+    LightDriver_TurnOff(driver);
+    LONGS_EQUAL(1, LightDriverSpy_GetLastId());
+    LONGS_EQUAL(LIGHT_OFF, LightDriverSpy_GetLastState());
+}
 
-// TEST(LightDriverSpy, RecordsLastIdLastTurnOff)
-// {
-//     LightDriverSpy_TurnOn(lightDriverSpy);
-//     LONGS_EQUAL(1, LightDriverSpy_GetLastId());
-//     LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetLastState());
-// }
+/**
+ * LightDriverSpy: RecordsLastIdLastTurnOff
+ * This test should pass
+ */
+TEST(LightDriverSpy, RecordsLastIdLastTurnOff)
+{
+    LightDriver_TurnOn(driver);
+    LONGS_EQUAL(1, LightDriverSpy_GetLastId());
+    LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetLastState());
+}
 
