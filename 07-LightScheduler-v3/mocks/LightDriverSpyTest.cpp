@@ -8,8 +8,6 @@ extern "C"
 /**
  * - Declare LightDriverSpy_InstallInterface()
  * - Declare LightDriverSpy_Destroy(driver)
-//  * - Create devices/LightDriverPrivate.h and create structs for the base
-//  *   driver and interface
  */
 TEST_GROUP(LightDriverSpy)
 {
@@ -38,14 +36,35 @@ TEST(LightDriverSpy, Create)
     LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(1));
 }
 
-// /**
-//  * LightDriverSpy: On
-//  */
-// TEST(LightDriverSpy, On)
-// {
-//     LightDriverSpy_TurnOn(lightDriverSpy);
-//     LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(1));
-// }
+/**
+ * LightDriverSpy: On
+ * Here we create the new basic driver structure
+ * - Create devices/LightDriverPrivate.h and move the LightDriverStruct from
+ *   LightDriver.h file, changing the type member to a string. Remove the
+ *   LightDriverType enum from LightDriver.h. Include the private header file
+ *   at the end of LightDriver.h
+ * - Declare the LightDriver_TurnOn() function
+ * - In LightDriverSpy_Create() change type to the string "Spy"
+ * - In LightController.h comment out all the switch blocks
+ * - In X10LightDriver.c cnange the type X10 to the string "X10"
+ * - Implement empty LightDriver_TurnOn()
+ * - In LightDriverSpy_Create() change LightDriverSpy to LightDriverSpyStruct inside
+ *   the calloc
+ * - In the private file create the struct for the interface, containing function
+ *   pointers to TurnOn, TurnOff and Destroy
+ * - Rename LightDriverSpy_TurnOn() to turnOn()
+ * - Create a static LightDriverInterfaceStruct and add turnOn, 0, 0
+ * - In LightDriverSpy_InstallInterface() call LightDriver_SetInterface(&interface)
+ * - In LightDriver.h create a pointer to LightDriverInterfaceStruct
+ * - In LightDriver.c create a static interface. Use LightDriver_SetInterface()
+ *   to set it.
+ * - In LightDriver_TurnOn() call interface->turnOn
+ */
+TEST(LightDriverSpy, On)
+{
+    LightDriver_TurnOn(driver);
+    LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(1));
+}
 
 // /**
 //  * LightDriverSpy: Off

@@ -11,16 +11,16 @@ static void destroy(LightDriver driver)
     if (!driver)
         return;
 
-    switch (driver->type)
-    {
-    case X10:
-        X10LightDriver_Destroy(driver);
-        break;
-    case TestLightDriver:
-        LightDriverSpy_Destroy(driver);        
-    default:
-        break;
-    }
+    // switch (driver->type)
+    // {
+    // case X10:
+    //     X10LightDriver_Destroy(driver);
+    //     break;
+    // case TestLightDriver:
+    //     LightDriverSpy_Destroy(driver);        
+    // default:
+    //     break;
+    // }
 }
 
 void LightController_Create(void)
@@ -56,16 +56,16 @@ void LightController_TurnOn(int id)
     if (driver == NULL)
         return;
 
-    switch (driver->type)
-    {
-    case X10:
-        X10LightDriver_TurnOn(driver);
-        break;
-    case TestLightDriver:
-        LightDriverSpy_TurnOn(driver);
-    default:
-        break;
-    }
+    // switch (driver->type)
+    // {
+    // case X10:
+    //     X10LightDriver_TurnOn(driver);
+    //     break;
+    // case TestLightDriver:
+    //     LightDriverSpy_TurnOn(driver);
+    // default:
+    //     break;
+    // }
 }
 
 void LightController_TurnOff(int id)
@@ -74,14 +74,14 @@ void LightController_TurnOff(int id)
     if (driver == NULL)
         return;
 
-    switch (driver->type)
-    {
-    case X10:
-        X10LightDriver_TurnOff(driver);
-        break;
-    case TestLightDriver:
-        LightDriverSpy_TurnOff(driver);    
-    default:
-        break;
-    }
+    // switch (driver->type)
+    // {
+    // case X10:
+    //     X10LightDriver_TurnOff(driver);
+    //     break;
+    // case TestLightDriver:
+    //     LightDriverSpy_TurnOff(driver);    
+    // default:
+    //     break;
+    // }
 }
