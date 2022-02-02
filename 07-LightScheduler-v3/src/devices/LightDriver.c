@@ -22,3 +22,13 @@ void LightDriver_TurnOff(LightDriver driver)
 {
     interface->TurnOff(driver);
 }
+
+int LightDriver_GetId(LightDriver driver)
+{
+    return driver->id;
+}
+
+const char * LightDriver_GetType(LightDriver driver)
+{
+    return driver->type;
+}
