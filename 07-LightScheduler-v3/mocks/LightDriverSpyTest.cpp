@@ -6,21 +6,25 @@ extern "C"
 #include "CppUTest/TestHarness.h"
 
 /**
- * 
+ * - Declare LightDriverSpy_InstallInterface()
+ * - Declare LightDriverSpy_Destroy(driver)
+//  * - Create devices/LightDriverPrivate.h and create structs for the base
+//  *   driver and interface
  */
 TEST_GROUP(LightDriverSpy)
 {
-    LightDriver lightDriverSpy;
+    LightDriver driver;
 
     void setup()
     {
         LightDriverSpy_Reset();
-        lightDriverSpy = LightDriverSpy_Create(1);
+        driver = LightDriverSpy_Create(1);
+        LightDriverSpy_InstallInterface();
     }
 
     void teardown()
     {
-        LightDriverSpy_Destroy(lightDriverSpy);
+        LightDriver_Destroy(driver);
     }
 };
 

@@ -16,4 +16,7 @@ typedef struct LightDriverStruct
 } LightDriverStruct;
 
 
+void LightDriver_Destroy(LightDriver driver);
+
+
 #endif
