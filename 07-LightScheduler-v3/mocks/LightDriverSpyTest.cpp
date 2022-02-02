@@ -30,6 +30,8 @@ TEST_GROUP(LightDriverSpy)
 
 /**
  * LightDriverSpy: Create
+ * - Implement empty _InstallInterface()
+ * - Create src/devices/LightDriver.c and implement _Destroy() to free the driver
  */
 TEST(LightDriverSpy, Create)
 {

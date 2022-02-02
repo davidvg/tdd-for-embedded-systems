@@ -36,6 +36,11 @@ void LightDriverSpy_Reset()
     }
 }
 
+void LightDriverSpy_InstallInterface(void)
+{
+    
+}
+
 void LightDriverSpy_AddSpiesToController(void)
 {
     for (int i=0; i<MAX_LIGHTS; i++)
