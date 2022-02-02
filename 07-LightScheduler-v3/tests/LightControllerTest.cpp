@@ -155,6 +155,28 @@ TEST(LightController, RejectsNullDrivers)
     LONGS_EQUAL(false, LightController_Add(1, NULL));
 }
 
+/**
+ * LightController: TurnOnNonExistingDriverDoesNothing
+ * This test should pass
+ */
+TEST(LightController, TurnOnNonExistingDriverDoesNothing)
+{
+    LightController_Remove(7);
+    LightController_TurnOn(7);
+    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(7));
+}
+
+/**
+ * LightController: TurnOffNonExistingDriverDoesNothing
+ * This test should pass
+ */
+TEST(LightController, TurnOffNonExistingDriverDoesNothing)
+{
+    LightController_Remove(7);
+    LightController_TurnOff(7);
+    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(7));
+}
+
 // /**
 //  * LightController: NonAddedLightDoesNothing
 //  */
