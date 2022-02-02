@@ -78,19 +78,21 @@ TEST(LightDriverSpy, Off)
     LONGS_EQUAL(LIGHT_OFF, LightDriverSpy_GetState(1));
 }
 
-// /**
-//  */
-// TEST(LightDriverSpy, OtherId)
-// {
-//     LightDriver otherSpy = LightDriverSpy_Create(7);
-//     LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(7));
+/**
+ * LightDriverSpy: OtherId
+ * This test should pass
+ */
+TEST(LightDriverSpy, OtherId)
+{
+    LightDriver otherSpy = LightDriverSpy_Create(7);
+    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(7));
 
-//     LightDriverSpy_TurnOn(otherSpy);
-//     LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(7));
-//     LONGS_EQUAL(7, LightDriverSpy_GetLastId());
+    LightDriver_TurnOn(otherSpy);
+    LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(7));
+    LONGS_EQUAL(7, LightDriverSpy_GetLastId());
     
-//     LightDriverSpy_Destroy(otherSpy);
-// }
+    LightDriver_Destroy(otherSpy);
+}
 
 /**
  * LightDriverSpy: RecordsLastIdLastTurnOn
