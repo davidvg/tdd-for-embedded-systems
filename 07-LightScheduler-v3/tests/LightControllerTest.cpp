@@ -68,35 +68,49 @@ TEST(LightController, TurnOff)
 	LONGS_EQUAL(LIGHT_OFF, LightDriverSpy_GetState(1));
 }
 
-// /**
-//  * LightController: AllDriversDestroyed
-//  */
-// TEST(LightController, AllDriversDestroyed)
-// {
-// 	for (int i = 0; i < MAX_LIGHTS; i++)
-// 	{
-// 		spy = LightDriverSpy_Create(i);
-// 		LONGS_EQUAL(true, LightController_Add(i, spy));
-// 	}
-// }
+/**
+ * LightController: AllDriversDestroyed
+ * This test should pass
+ */
+TEST(LightController, AllDriversDestroyed)
+{
+	for (int i = 0; i < MAX_LIGHTS; i++)
+	{
+		spy = LightDriverSpy_Create(i);
+		LONGS_EQUAL(true, LightController_Add(i, (LightDriver)spy));
+	}
+}
 
-// /**
-//  * LightController: ValidIdLowerRange
-//  */
-// TEST(LightController, ValidIdLowerRange)
-// {
-// 	spy = LightDriverSpy_Create(0);
-// 	LONGS_EQUAL(true, LightController_Add(0, spy));
-// }
+/**
+ * LightController: ValidIdLowerRange
+ * This test should pass
+ */
+TEST(LightController, ValidIdLowerRange)
+{
+	spy = LightDriverSpy_Create(0);
+	LONGS_EQUAL(true, LightController_Add(0, (LightDriver)spy));
+}
 
-// /**
-//  * LightController: ValidIdUpperRange
-//  */
-// TEST(LightController, ValidIdUpperRange)
-// {
-// 	spy = LightDriverSpy_Create(MAX_LIGHTS);
-// 	LONGS_EQUAL(true, LightController_Add(MAX_LIGHTS-1, spy));
-// }
+/**
+ * LightController: ValidIdUpperRange
+ * This test should pass
+ */
+TEST(LightController, ValidIdUpperRange)
+{
+	spy = LightDriverSpy_Create(MAX_LIGHTS);
+	LONGS_EQUAL(true, LightController_Add(MAX_LIGHTS-1, (LightDriver)spy));
+}
+
+/**
+ * LightController: InValidIdBeyondUpperRange
+ * This test should pass
+ */
+TEST(LightController, InValidIdBeyondUpperRange)
+{
+	spy = LightDriverSpy_Create(MAX_LIGHTS);
+	LONGS_EQUAL(false, LightController_Add(MAX_LIGHTS, (LightDriver)spy));
+	free(spy);
+}
 
 // /**
 //  * LightController: InValidIdBeyondUpperRange
