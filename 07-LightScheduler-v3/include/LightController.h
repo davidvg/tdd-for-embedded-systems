@@ -11,6 +11,7 @@ void LightController_Create(void);
 void LightController_Destroy(void);
 
 bool LightController_Add(int id, LightDriver driver);
+bool LightController_Remove(int id);
 
 void LightController_TurnOn(int id);
 void LightController_TurnOff(int id);

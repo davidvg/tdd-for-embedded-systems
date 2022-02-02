@@ -112,15 +112,39 @@ TEST(LightController, InValidIdBeyondUpperRange)
 	free(spy);
 }
 
-// /**
-//  * LightController: InValidIdBeyondUpperRange
-//  */
-// TEST(LightController, InValidIdBeyondUpperRange)
-// {
-// 	spy = LightDriverSpy_Create(MAX_LIGHTS);
-// 	LONGS_EQUAL(false, LightController_Add(MAX_LIGHTS, spy));
-// 	free(spy);
-// }
+/**
+ * LightController: RemoveExistingLightDriverSucceeds
+ * - Create LightController_Remove(id)
+ * - Check if id is out of bounds and return false if so
+ * - destroy drivers[id] and make drivers[id]=NULL, and return true
+ */
+TEST(LightController, RemoveExistingLightDriverSucceeds)
+{
+    CHECK(LightController_Remove(10));
+}
+
+/**
+ * LightController: RemovedLightDoesNothing
+ * This test should pass
+ */
+TEST(LightController, RemovedLightDoesNothing)
+{
+    LightController_Remove(1);
+    LightController_TurnOn(1);
+    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(1));
+    LightController_TurnOff(1);
+    LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(1));
+}
+
+/**
+ * LightController: RemoveNonExistingLightDriverFails
+ * - In LightController_Remove() check if driver==NULL and return false
+ */
+TEST(LightController, RemoveNonExistingLightDriverFails)
+{
+    CHECK(LightController_Remove(10));
+    CHECK(LightController_Remove(10) == false);
+}
 
 // /**
 //  * LightController: NonAddedLightDoesNothing
