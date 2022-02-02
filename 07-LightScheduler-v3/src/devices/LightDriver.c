@@ -10,7 +10,7 @@ void LightDriver_SetInterface(LightDriverInterface i)
 
 void LightDriver_Destroy(LightDriver driver)
 {
-    free(driver); // TODO Change to interface method
+    interface->Destroy(driver);
 }
 
 void LightDriver_TurnOn(LightDriver driver)

@@ -60,10 +60,16 @@ void turnOff(LightDriver driver)
     update(self->base.id, LIGHT_OFF);
 }
 
+void destroy(LightDriver driver)
+{
+    LightDriverSpy self = (LightDriverSpy)driver;
+    free(self);
+}
+
 static LightDriverInterfaceStruct interface = {
     turnOn,
     turnOff,
-    0
+    destroy
 };
 
 void LightDriverSpy_InstallInterface(void)
@@ -72,12 +78,6 @@ void LightDriverSpy_InstallInterface(void)
 }
 
 // ### INTERFACE METHODS: END ### //
-
-void LightDriverSpy_Destroy(LightDriver driver)
-{
-    LightDriverSpy self = (LightDriverSpy)driver;
-    free(self);
-}
 
 int LightDriverSpy_GetState(int id)
 {
