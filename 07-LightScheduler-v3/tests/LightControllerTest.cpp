@@ -8,31 +8,45 @@ extern "C"
 
 #include "CppUTest/TestHarness.h"
 
-// /**
-//  */
-// TEST_GROUP(LightController)
-// {
-//     LightDriver spy;
+/**
+ */
+TEST_GROUP(LightController)
+{
+    LightDriver spy;
 
-//     void setup()
-//     {
-//       LightController_Create();
-//       LightDriverSpy_AddSpiesToController();
-//     }
+    void setup()
+    {
+      LightController_Create();
+      LightDriverSpy_AddSpiesToController();
+      LightDriverSpy_InstallInterface();
+      LightDriverSpy_Reset();
+    }
 
-//     void teardown()
-//     {
-//        LightController_Destroy();
-//     }
-// };
+    void teardown()
+    {
+       LightController_Destroy();
+    }
+};
 
-// /**
-//  */
-// TEST(LightController, TurnOn)
-// {
-// 	LightController_TurnOn(7);
-// 	LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(7));
-// }
+/**
+ * LightController: CreateDestroy
+ * - LightController.c: in destroy() substitute the switch block with
+ *   LightDriver_Destroy(driver)
+ */
+TEST(LightController, CreateDestroy)
+{
+
+}
+
+/**
+ * LightController: AddingDriverDestroysPreviousAndDoesNotLeak
+ */
+TEST(LightController, AddingDriverDestroysPreviousAndDoesNotLeak)
+{
+    spy = LightDriverSpy_Create(1);
+    LightController_Add(1, spy);
+    // LightController_Destroy();
+}
 
 // TEST(LightController, TurnOff)
 // {

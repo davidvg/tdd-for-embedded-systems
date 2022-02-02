@@ -11,16 +11,7 @@ static void destroy(LightDriver driver)
     if (!driver)
         return;
 
-    // switch (driver->type)
-    // {
-    // case X10:
-    //     X10LightDriver_Destroy(driver);
-    //     break;
-    // case TestLightDriver:
-    //     LightDriverSpy_Destroy(driver);        
-    // default:
-    //     break;
-    // }
+    LightDriver_Destroy(driver);
 }
 
 void LightController_Create(void)
