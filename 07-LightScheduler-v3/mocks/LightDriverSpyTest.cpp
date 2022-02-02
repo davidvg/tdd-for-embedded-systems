@@ -66,14 +66,17 @@ TEST(LightDriverSpy, On)
     LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(1));
 }
 
-// /**
-//  * LightDriverSpy: Off
-//  */
-// TEST(LightDriverSpy, Off)
-// {
-//     LightDriverSpy_TurnOff(lightDriverSpy);
-//     LONGS_EQUAL(LIGHT_OFF, LightDriverSpy_GetState(1));
-// }
+/**
+ * LightDriverSpy: Off
+ * - Create LightDriver_Turnoff()
+ * - Rename LightDriverSpy_TurnOff() to turnOff() and add it to the interface struct
+ * - Call interface->turnOff() inside LightDriver_TurnOff()
+ */
+TEST(LightDriverSpy, Off)
+{
+    LightDriver_TurnOff(driver);
+    LONGS_EQUAL(LIGHT_OFF, LightDriverSpy_GetState(1));
+}
 
 // /**
 //  */

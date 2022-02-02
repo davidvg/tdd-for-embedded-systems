@@ -11,6 +11,7 @@ void LightDriver_SetInterface(LightDriverInterface i);
 void LightDriver_Destroy(LightDriver driver);
 
 void LightDriver_TurnOn(LightDriver driver);
+void LightDriver_TurnOff(LightDriver driver);
 
 #include "LightDriverPrivate.h"
 

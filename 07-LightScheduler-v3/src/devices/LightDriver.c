@@ -17,3 +17,8 @@ void LightDriver_TurnOn(LightDriver driver)
 {
     interface->TurnOn(driver);
 }
+
+void LightDriver_TurnOff(LightDriver driver)
+{
+    interface->TurnOff(driver);
+}
