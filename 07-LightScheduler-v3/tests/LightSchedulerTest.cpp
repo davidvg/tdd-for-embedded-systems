@@ -1,49 +1,60 @@
 extern "C"
 {
     #include "LightScheduler.h"
+    #include "LightController.h"
     #include "LightDriverSpy.h"
     #include "FakeTimeService.h"
 }
 
 #include "CppUTest/TestHarness.h"
 
-// /**
-//  */
-// TEST_GROUP(LightScheduler)
-// {
-//     void setup()
-//     {
-//         LightController_Create();
-// 		LightDriverSpy_Reset();
-// 		LightDriverSpy_AddSpiesToController();
-//         LightScheduler_Create();
-//     }
+/**
+ */
+TEST_GROUP(LightScheduler)
+{
+    void setup()
+    {
+        LightDriverSpy_Reset();
+        LightDriverSpy_InstallInterface();
+        LightController_Create();
+		LightDriverSpy_AddSpiesToController();
+        LightScheduler_Create();
+    }
 
-//     void teardown()
-//     {
-//         LightScheduler_Destroy();  
-//         LightController_Destroy();
-//     }
+    void teardown()
+    {
+        LightScheduler_Destroy();  
+        LightController_Destroy();
+    }
 
-//     void setTimeTo(int day, int minute)
-//     {
-//         FakeTimeService_SetDay(day);
-//         FakeTimeService_SetMinute(minute);
-//     }
+    void setTimeTo(int day, int minute)
+    {
+        FakeTimeService_SetDay(day);
+        FakeTimeService_SetMinute(minute);
+    }
 
-//     void checkLightState(int id, int state)
-//     {
-//         if (id == LIGHT_ID_UNKNOWN)
-//         {
-//             LONGS_EQUAL(state, LightDriverSpy_GetLastState());   
-//         }
-//         else
-//         {
-//             LONGS_EQUAL(state, LightDriverSpy_GetState(id));
-//         }
+    void checkLightState(int id, int state)
+    {
+        if (id == LIGHT_ID_UNKNOWN)
+        {
+            LONGS_EQUAL(state, LightDriverSpy_GetLastState());   
+        }
+        else
+        {
+            LONGS_EQUAL(state, LightDriverSpy_GetState(id));
+        }
          
-//     }
-// };
+    }
+};
+
+/**
+ * LightScheduler: createDestroy
+ * This test should pass
+ */
+TEST(LightScheduler, createDestroy)
+{
+
+}
 
 // /**
 //  * LightScheduler: NoChangeToLightsDuringInitialization
