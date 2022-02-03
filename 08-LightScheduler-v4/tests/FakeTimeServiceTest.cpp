@@ -1,0 +1,44 @@
+extern "C"
+{
+    #include "FakeTimeService.h"
+    #include "LightScheduler.h"
+}
+
+#include "CppUTest/TestHarness.h"
+
+TEST_GROUP(FakeTimeService)
+{
+    void setup()
+    {
+        TimeService_Create();
+    }
+
+    void teardown()
+    {
+        TimeService_Destroy();
+    }
+};
+
+/**
+ * FakeTimeService: Create
+ */
+TEST(FakeTimeService, Create)
+{
+    Time time;
+    TimeService_GetTime(&time);
+    LONGS_EQUAL(TIME_UNKNOWN, time.minuteOfDay);
+    LONGS_EQUAL(TIME_UNKNOWN, time.dayOfWeek);
+}
+
+/**
+ * FakeTimeService: Set
+ */
+TEST(FakeTimeService, Set)
+{
+    Time time;
+    FakeTimeService_SetMinute(42);
+    FakeTimeService_SetDay(SATURDAY);
+    TimeService_GetTime(&time);
+    LONGS_EQUAL(42, time.minuteOfDay);
+    LONGS_EQUAL(SATURDAY, time.dayOfWeek);
+}

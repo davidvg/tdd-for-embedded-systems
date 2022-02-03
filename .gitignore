@@ -11,3 +11,7 @@
 *_tests
 **/*.map
 
+08-LightScheduler-v4/t3_HA
+02-LightScheduler-v1/uml/02-light-scheduler-v1.xmi
+07-LightScheduler-v3/uml/07-header-files-t2.xmi
+08-LightScheduler-v4/uml
