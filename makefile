@@ -12,6 +12,7 @@ endif
 	make -C 05-IO-CppUMock
 	make -C 06-LightScheduler-v2
 	make -C 07-LightScheduler-v3
+	make -C 08-LightScheduler-v4
 
 clean:
 	make -C 01-LedDriver clean
@@ -23,3 +24,4 @@ clean:
 	make -C 05-IO-CppUMock clean
 	make -C 06-LightScheduler-v2 clean
 	make -C 07-LightScheduler-v3 clean
+	make -C 08-LightScheduler-v4 clean

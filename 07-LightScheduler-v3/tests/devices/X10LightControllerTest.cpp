@@ -34,12 +34,12 @@ TEST(X10LightDriver, Create)
     STRCMP_EQUAL("X10", LightDriver_GetType(driver));
 }
 
-// TEST(X10LightDriver, TurnOn)
-// {
-//     X10LightDriver_TurnOn(driver);
-// }
+ TEST(X10LightDriver, TurnOn)
+ {
+     X10LightDriver_TurnOn(driver);
+ }
 
-// TEST(X10LightDriver, TurnOff)
-// {
-//     X10LightDriver_TurnOff(driver);
-// }
+ TEST(X10LightDriver, TurnOff)
+ {
+     X10LightDriver_TurnOff(driver);
+ }
