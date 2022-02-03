@@ -19,7 +19,19 @@ typedef struct LightDriverStruct
 
 Now, each `LightDriver` will call the needed function via its own `vtable`.
 
-A new mock object is used to act as a different driver: `CountingLightDriver`. It has the following structure:
+## LightDriver and LightDriverSpy
+
+First, the current code is adapted to the new `vtable` interface. All the tests for `LightScheduler`, `LightController` and the `X10LightDriver` are commented out and will be tested later. This way only the tests for `LightDriverSpy` will be affected.
+
+
+
+
+
+
+
+<!-- ## CountingLightDriver
+
+Now that the previous version has been adapted to the new interface, a new mock object is used to act as a different driver: `CountingLightDriver`. It has the following structure:
 
 ```c
 typedef struct CountingLightDriverStruct
@@ -29,4 +41,15 @@ typedef struct CountingLightDriverStruct
 } CountingLightDriverStruct;
 ```
 
-The driver will have a function that increments `counter` each time the interface is called.
+`CountingLightDriver_Create(int id)` initializes the driver in the same way as `LightDriverSpy`.
+
+The driver will have a function that increments `counter` each time the interface is called. The interface is composed using this function:
+
+```c
+LightDriverInterfaceStruct interface = 
+{
+    count,
+    count,
+    destroy
+};
+``` -->

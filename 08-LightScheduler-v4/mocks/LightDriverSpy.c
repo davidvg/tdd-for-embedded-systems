@@ -17,35 +17,6 @@ static void update(int id, int state)
     lastId = id;
 }
 
-LightDriver LightDriverSpy_Create(int id)
-{
-    LightDriverSpy self = calloc(1, sizeof(LightDriverSpyStruct));
-
-    self->base.type = "Spy";
-    self->base.id = id;
-
-    return (LightDriver) self;
-}
-
-void LightDriverSpy_Reset()
-{
-    for (int i=0; i<MAX_LIGHTS; i++)
-    {
-        states[i] = LIGHT_STATE_UNKNOWN;
-    }
-    lastId = LIGHT_ID_UNKNOWN;
-    lastState = LIGHT_STATE_UNKNOWN;
-}
-
-void LightDriverSpy_AddSpiesToController(void)
-{
-    for (int i=0; i<MAX_LIGHTS; i++)
-    {
-        LightDriver spy = (LightDriver)LightDriverSpy_Create(i);
-        LightController_Add(i, (LightDriver)spy);
-    }
-}
-
 // ### INTERFACE METHODS ### //
 
 void turnOn(LightDriver driver)
@@ -72,12 +43,37 @@ static LightDriverInterfaceStruct interface = {
     destroy
 };
 
-void LightDriverSpy_InstallInterface(void)
+// ### INTERFACE METHODS: END ### //
+
+LightDriver LightDriverSpy_Create(int id)
 {
-    LightDriver_SetInterface(&interface);
+    LightDriverSpy self = calloc(1, sizeof(LightDriverSpyStruct));
+
+    self->base.vtable = &interface;
+    self->base.type = "Spy";
+    self->base.id = id;
+
+    return (LightDriver) self;
 }
 
-// ### INTERFACE METHODS: END ### //
+void LightDriverSpy_Reset()
+{
+    for (int i=0; i<MAX_LIGHTS; i++)
+    {
+        states[i] = LIGHT_STATE_UNKNOWN;
+    }
+    lastId = LIGHT_ID_UNKNOWN;
+    lastState = LIGHT_STATE_UNKNOWN;
+}
+
+void LightDriverSpy_AddSpiesToController(void)
+{
+    for (int i=0; i<MAX_LIGHTS; i++)
+    {
+        LightDriver spy = (LightDriver)LightDriverSpy_Create(i);
+        LightController_Add(i, (LightDriver)spy);
+    }
+}
 
 int LightDriverSpy_GetState(int id)
 {

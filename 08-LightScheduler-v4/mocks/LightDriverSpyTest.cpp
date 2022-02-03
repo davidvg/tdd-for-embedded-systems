@@ -6,6 +6,13 @@ extern "C"
 #include "CppUTest/TestHarness.h"
 
 /**
+ * - LightDriverPrivate.h: add a LightDriverInterface vtable to LightDriverStruct
+ * - LightDriverSpy.c: in _Create() set vtable=&interface. The order of the
+ *   functions must be changed to avoid undeclared functions. Comment out
+ *   _InstallInterface()
+ * - LightDriver.c: modify the code to call the interface via the vtable included
+ *   in the driver after checking that the driver is valid using if(driver).
+ *   Remove _SetInterface() and the static interface
  */
 TEST_GROUP(LightDriverSpy)
 {
@@ -15,7 +22,6 @@ TEST_GROUP(LightDriverSpy)
     {
         LightDriverSpy_Reset();
         driver = LightDriverSpy_Create(1);
-        LightDriverSpy_InstallInterface();
     }
 
     void teardown()

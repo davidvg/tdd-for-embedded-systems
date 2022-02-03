@@ -1,26 +1,22 @@
 #include "LightDriver.h"
 
-static LightDriverInterface interface;
-
-
-void LightDriver_SetInterface(LightDriverInterface i)
-{
-    interface = i;
-}
 
 void LightDriver_Destroy(LightDriver driver)
 {
-    interface->Destroy(driver);
+    if (driver)
+        driver->vtable->Destroy(driver);
 }
 
 void LightDriver_TurnOn(LightDriver driver)
 {
-    interface->TurnOn(driver);
+    if (driver)
+        driver->vtable->TurnOn(driver);
 }
 
 void LightDriver_TurnOff(LightDriver driver)
 {
-    interface->TurnOff(driver);
+    if (driver)
+        driver->vtable->TurnOff(driver);
 }
 
 int LightDriver_GetId(LightDriver driver)

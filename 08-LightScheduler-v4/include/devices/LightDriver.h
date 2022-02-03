@@ -7,7 +7,6 @@ typedef struct LightDriverStruct * LightDriver;
 typedef struct LightDriverInterfaceStruct * LightDriverInterface;
 
 
-void LightDriver_SetInterface(LightDriverInterface i);
 void LightDriver_Destroy(LightDriver driver);
 
 void LightDriver_TurnOn(LightDriver driver);
