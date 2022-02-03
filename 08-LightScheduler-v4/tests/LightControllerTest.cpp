@@ -3,6 +3,7 @@ extern "C"
     #include "LightController.h"
     #include "LightDriverSpy.h"
     #include "X10LightDriver.h"
+    #include "CountingLightDriver.h"
     #include <stdbool.h>
 }
 
@@ -166,4 +167,29 @@ TEST(LightController, TurnOffNonExistingDriverDoesNothing)
     LightController_Remove(7);
     LightController_TurnOff(7);
     LONGS_EQUAL(LIGHT_STATE_UNKNOWN, LightDriverSpy_GetState(7));
+}
+
+// ### V4: COUNTINGLIGHTDRIVER TESTS ### //
+
+/**
+ * LightController: TurnOnDifferentDriverTypes
+ * - CountingLightDriver.h: create CountingLightDriverStruct and a pointer to it,
+ *   like in the spy.
+ * - Create a function to increment the driver's counter, count(driver).
+ * - Create destroy()
+ * - Create the interface using {count, count, destroy}
+ * - Create CountingLightDriver_Create() and initialize it like the spy.
+ * - Create CountingLightDriver_GetCount() to return the counter
+ */
+TEST(LightController, TurnOnDifferentDriverTypes)
+{
+    LightDriver other = CountingLightDriver_Create(5);
+    LightController_Add(5, other);
+
+    LightController_TurnOn(7);
+    LightController_TurnOn(5);
+    LightController_TurnOff(5);
+
+    LONGS_EQUAL(LIGHT_ON, LightDriverSpy_GetState(7));
+    LONGS_EQUAL(2, CountingLightDriver_GetCount(other));
 }

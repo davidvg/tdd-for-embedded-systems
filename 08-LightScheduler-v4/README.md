@@ -23,13 +23,9 @@ Now, each `LightDriver` will call the needed function via its own `vtable`.
 
 First, the current code is adapted to the new `vtable` interface. All the tests for `LightScheduler`, `LightController` and the `X10LightDriver` are commented out and will be tested later. This way only the tests for `LightDriverSpy` will be affected.
 
+---
 
-
-
-
-
-
-<!-- ## CountingLightDriver
+## CountingLightDriver
 
 Now that the previous version has been adapted to the new interface, a new mock object is used to act as a different driver: `CountingLightDriver`. It has the following structure:
 
@@ -52,4 +48,4 @@ LightDriverInterfaceStruct interface =
     count,
     destroy
 };
-``` -->
+```
